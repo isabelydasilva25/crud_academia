@@ -1,196 +1,136 @@
-// Array para armazenar os clientes
-let clientes = [];
+async function incluirCliente(event) {
+    alert("asdf");
+    event.preventDefault();
+    
 
-// Função para incluir um novo cliente
-function incluirCliente() {
-    const form = document.getElementById('formCliente');
-    if (!form.checkValidity()) {
-        alert("Por favor, preencha todos os campos corretamente.");
-        return;
-    }
 
     const cliente = {
-        codigo: document.getElementById('codigo').value,
-        nome: document.getElementById('nome').value,
-        idade: document.getElementById('idade').value,
-        telefone: document.getElementById('telefone').value,
-        emergencia: document.getElementById('emergencia').value,
-        endereco: document.getElementById('endereco').value,
-        email: document.getElementById('email').value,
-        cpf: document.getElementById('cpf').value
+        codigo: document.getElementById("codigo").value,
+        nome: document.getElementById("nome").value,
+        idade: document.getElementById("idade").value,
+        telefone: document.getElementById("telefone").value,
+        emergencia: document.getElementById("emergencia").value,
+        endereco: document.getElementById("endereco").value,
+        email: document.getElementById("email").value,
+        cpf: document.getElementById("cpf").value
     };
 
-    // Verifica se o código já existe (para atualização)
-    const index = clientes.findIndex(c => c.codigo === cliente.codigo);
-    if (index === -1) {
-        clientes.push(cliente);
-        alert("Cliente cadastrado com sucesso!");
-    } else {
-        clientes[index] = cliente;
-        alert("Cliente atualizado com sucesso!");
-    }
+    try {
+        const response = await fetch('/clientes', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(cliente)
+        });
 
-    limparFormulario();
-}
-
-// Função para excluir um cliente
-function excluirCliente() {
-    const codigo = document.getElementById('codigo').value;
-    if (!codigo) {
-        alert("Por favor, informe o código do cliente a ser excluído.");
-        return;
-    }
-
-    const index = clientes.findIndex(c => c.codigo === codigo);
-    if (index !== -1) {
-        if (confirm(`Tem certeza que deseja excluir o cliente ${clientes[index].nome}?`)) {
-            clientes.splice(index, 1);
-            alert("Cliente excluído com sucesso!");
-            limparFormulario();
+        const result = await response.json();
+        if (response.ok) {
+            alert("Cliente cadastrado com sucesso!");
+            document.getElementById("cliente-form").reset();
+        } else {
+            alert(`Erro: ${result.message}`);
         }
-    } else {
-        alert("Cliente não encontrado.");
+    } catch (err) {
+        console.error("Erro na solicitação:", err);
+        alert("Erro ao cadastrar cliente.");
     }
 }
 
-// Função para alterar um cliente
-function alterarCliente() {
+
+
+
+
+// Função para listar todos os clientes ou buscar clientes por CPF
+async function consultarClientes() {
+    const cpf = document.getElementById('cpf').value.trim();  // Pega o valor do CPF digitado no input
+
+    let url = '/clientes';  // URL padrão para todos os clientes
+
+    if (cpf) {
+        // Se CPF foi digitado, adiciona o parâmetro de consulta
+        url += `?cpf=${cpf}`;
+    }
+
+    try {
+        const response = await fetch(url);
+        const clientes = await response.json();
+
+        const tabela = document.getElementById('tabela-clientes');
+        tabela.innerHTML = ''; // Limpa a tabela antes de preencher
+
+        if (clientes.length === 0) {
+            // Caso não encontre clientes, exibe uma mensagem
+            tabela.innerHTML = '<tr><td colspan="6">Nenhum cliente encontrado.</td></tr>';
+        } else {
+            clientes.forEach(cliente => {
+                const linha = document.createElement('tr');
+                linha.innerHTML = `
+                    <td>${cliente.codigo}</td>
+                    <td>${cliente.nome}</td>
+                    <td>${cliente.idade}</td>
+                    <td>${cliente.telefone}</td>
+                    <td>${cliente.emergencia}</td>
+                    <td>${cliente.endereco}</td>
+                    <td>${cliente.email}</td>
+                    <td>${cliente.cpf}</td>
+                `;
+                tabela.appendChild(linha);
+            });
+        }
+    } catch (error) {
+        console.error('Erro ao listar clientes:', error);
+    }
+}
+// Função para atualizar as informações do cliente
+async function alterarCliente() {
     const codigo = document.getElementById('codigo').value;
-    if (!codigo) {
-        alert("Por favor, informe o código do cliente a ser alterado.");
-        return;
-    }
+    const nome = document.getElementById('nome').value;
+    const idade = document.getElementById('idade').value;
+    const telefone = document.getElementById('telefone').value;
+    const emergencia = document.getElementById('emergencia').value;
+    const endereco = document.getElementById('endereco').value;
+    const email = document.getElementById('email').value;
+    const cpf = document.getElementById('cpf').value;
 
-    const cliente = clientes.find(c => c.codigo === codigo);
-    if (cliente) {
-        document.getElementById('nome').value = cliente.nome;
-        document.getElementById('idade').value = cliente.idade;
-        document.getElementById('telefone').value = cliente.telefone;
-        document.getElementById('emergencia').value = cliente.emergencia;
-        document.getElementById('endereco').value = cliente.endereco;
-        document.getElementById('email').value = cliente.email;
-        document.getElementById('cpf').value = cliente.cpf;
-    } else {
-        alert("Cliente não encontrado.");
-    }
-}
+    const clienteAtualizado = {
+        codigo,
+        nome,
+        idade, 
+        telefone,
+        emergencia,
+        endereco,
+        email,
+        cpf
+    };
 
-// Função para consultar/visualizar a lista de clientes
-function consultarClientes() {
-    const sectionCadastro = document.getElementById('cliente');
-    const sectionLista = document.getElementById('lista-clientes');
-    
-    if (clientes.length === 0) {
-        alert("Nenhum cliente cadastrado ainda.");
-        return;
-    }
+    try {
+        const response = await fetch(`/clientes/cpf/${cpf}`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(clienteAtualizado)
+        });
 
-    sectionCadastro.style.display = 'none';
-    sectionLista.style.display = 'block';
-
-    const tabela = document.getElementById('corpo-tabela');
-    tabela.innerHTML = '';
-
-    clientes.forEach(cliente => {
-        const row = document.createElement('tr');
-        row.innerHTML = `
-            <td>${cliente.codigo}</td>
-            <td>${cliente.nome}</td>
-            <td>${cliente.idade}</td>
-            <td>${cliente.telefone}</td>
-            <td>${cliente.cpf}</td>
-            <td class="acoes">
-                <button class="editar" onclick="carregarParaEdicao('${cliente.codigo}')">Editar</button>
-                <button class="excluir" onclick="confirmarExclusao('${cliente.codigo}')">Excluir</button>
-            </td>
-        `;
-        tabela.appendChild(row);
-    });
-}
-
-// Função auxiliar para carregar cliente para edição
-function carregarParaEdicao(codigo) {
-    voltarParaCadastro();
-    const cliente = clientes.find(c => c.codigo === codigo);
-    if (cliente) {
-        document.getElementById('codigo').value = cliente.codigo;
-        document.getElementById('nome').value = cliente.nome;
-        document.getElementById('idade').value = cliente.idade;
-        document.getElementById('telefone').value = cliente.telefone;
-        document.getElementById('emergencia').value = cliente.emergencia;
-        document.getElementById('endereco').value = cliente.endereco;
-        document.getElementById('email').value = cliente.email;
-        document.getElementById('cpf').value = cliente.cpf;
+        if (response.ok) {
+            alert('Cliente atualizado com sucesso!');
+        } else {
+            const errorMessage = await response.text();
+            alert('Erro ao atualizar cliente: ' + errorMessage);
+        }
+    } catch (error) {
+        console.error('Erro ao atualizar cliente:', error);
+        alert('Erro ao atualizar cliente.');
     }
 }
-
-// Função auxiliar para confirmar exclusão
-function confirmarExclusao(codigo) {
-    if (confirm("Tem certeza que deseja excluir este cliente?")) {
-        clientes = clientes.filter(c => c.codigo !== codigo);
-        consultarClientes(); // Atualiza a tabela
-    }
+async function limpaFormulario() {
+    const codigo = document.getElementById('codigo').value;
+    document.getElementById('nome').value = '';
+    document.getElementById('idade').value = '';
+    const telefone = document.getElementById('telefone').value;
+    const emergencia = document.getElementById('emergencia').value;
+    const endereco = document.getElementById('endereco').value;
+    document.getElementById('email').value = '';
+    const cpf = document.getElementById('cpf').value;
 }
-
-// Função para voltar para o formulário de cadastro
-function voltarParaCadastro() {
-    document.getElementById('cliente').style.display = 'block';
-    document.getElementById('lista-clientes').style.display = 'none';
-}
-
-// Função para limpar o formulário
-function limparFormulario() {
-    document.getElementById('formCliente').reset();
-}
-
-// Validação de CPF (opcional)
-function validarCPF(cpf) {
-    cpf = cpf.replace(/[^\d]+/g,'');
-    if(cpf == '') return false;
-    
-    // Elimina CPFs invalidos conhecidos
-    if (cpf.length != 11 || 
-        cpf == "00000000000" || 
-        cpf == "11111111111" || 
-        cpf == "22222222222" || 
-        cpf == "33333333333" || 
-        cpf == "44444444444" || 
-        cpf == "55555555555" || 
-        cpf == "66666666666" || 
-        cpf == "77777777777" || 
-        cpf == "88888888888" || 
-        cpf == "99999999999")
-        return false;
-        
-    // Valida 1o digito
-    let add = 0;
-    for (let i=0; i < 9; i ++)
-        add += parseInt(cpf.charAt(i)) * (10 - i);
-    let rev = 11 - (add % 11);
-    if (rev == 10 || rev == 11)
-        rev = 0;
-    if (rev != parseInt(cpf.charAt(9)))
-        return false;
-        
-    // Valida 2o digito
-    add = 0;
-    for (let i = 0; i < 10; i ++)
-        add += parseInt(cpf.charAt(i)) * (11 - i);
-    rev = 11 - (add % 11);
-    if (rev == 10 || rev == 11)
-        rev = 0;
-    if (rev != parseInt(cpf.charAt(10)))
-        return false;
-        
-    return true;
-}
-
-// Adiciona validação de CPF ao formulário
-document.getElementById('cpf').addEventListener('blur', function() {
-    if (!validarCPF(this.value)) {
-        alert("CPF inválido!");
-        this.value = '';
-        this.focus();
-    }
-});
-
