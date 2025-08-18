@@ -1,135 +1,130 @@
-async function incluirCliente(event) {
-    event.preventDefault();
+const express = require("express");
+const bodyParser = require("body-parser");
+const sqlite3 = require("sqlite3").verbose();
 
+const app = express();
+const port = process.env.PORT || 3000;
 
+// Serve os arquivos estáticos da pasta "public"
+app.use(express.static("public"));
 
-    const cliente = {
-        codigo: document.getElementById("codigo").value,
-        nome: document.getElementById("nome").value,
-        idade: document.getElementById("idade").value,
-        telefone: document.getElementById("telefone").value,
-        emergencia: document.getElementById("emergencia").value,
-        endereco: document.getElementById("endereco").value,
-        email: document.getElementById("email").value,
-        cpf: document.getElementById("cpf").value
-    };
+// Configura o body-parser para ler JSON
+app.use(bodyParser.json());
 
-    try {
-        const response = await fetch('/clientes', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(cliente)
-        });
-
-        const result = await response.json();
-        if (response.ok) {
-            alert("Cliente cadastrado com sucesso!");
-            document.getElementById("formCliente").reset();
-        } else {
-            alert(`Erro: ${result.message}`);
-        }
-    } catch (err) {
-        console.error("Erro na solicitação:", err);
-        alert("Erro ao cadastrar cliente.");
+// Conexão com o banco de dados SQLite
+const db = new sqlite3.Database("./database.db", (err) => {
+    if (err) {
+        console.error("Erro ao conectar ao banco de dados:", err.message);
+    } else {
+        console.log("Conectado ao banco de dados SQLite.");
     }
-}
+});
 
+// Criação das tabelas
+db.serialize(() => {
+    db.run(`
+        CREATE TABLE IF NOT EXISTS clientes (
+            id INTEGER primary key AUTOINCREMENT,
+            codigo VARCHAR(10),
+            nome VARCHAR(100) NOT NULL,
+            idade INTEGER,
+            telefone VARCHAR(15),
+            emergencia VARCHAR(15),
+            endereco TEXT,
+            email VARCHAR(100),
+            cpf VARCHAR(14) NOT NULL UNIQUE
+        )
+    `);
 
+    console.log("Tabelas criadas com sucesso.");
+});
 
+///////////////////////////// Rotas para Clientes /////////////////////////////
+///////////////////////////// Rotas para Clientes /////////////////////////////
+///////////////////////////// Rotas para Clientes /////////////////////////////
 
+// Cadastrar cliente
+app.post("/clientes", (req, res) => {
+    const { codigo, nome, idade, telefone, emergencia, endereco, email, cpf } =
+        req.body;
 
-// Função para listar todos os clientes ou buscar clientes por CPF
-async function consultarClientes() {
-    const cpf = document.getElementById('cpf').value.trim();  // Pega o valor do CPF digitado no input
+    if (!nome || !cpf) {
+        return res.status(400).send("Nome e CPF são obrigatórios.");
+    }
 
-    let url = '/clientes';  // URL padrão para todos os clientes
+    const query = `INSERT INTO clientes (codigo, nome, idade, telefone, emergencia, endereco, email, cpf) VALUES (?, ?, ?, ?, ?, ?, ?, ?)`;
+    db.run(
+        query,
+        [codigo, nome, idade, telefone, emergencia, endereco, email, cpf],
+        function (err) {
+            if (err) {
+                return res.status(500).send("Erro ao cadastrar cliente.");
+            }
+            res.status(201).send({
+                id: this.lastID,
+                message: "Cliente cadastrado com sucesso.",
+            });
+        },
+    );
+});
+
+// Listar clientes
+// Endpoint para listar todos os clientes ou buscar por CPF
+app.get("/clientes", (req, res) => {
+    const cpf = req.query.cpf || ""; // Recebe o CPF da query string (se houver)
 
     if (cpf) {
-        // Se CPF foi digitado, adiciona o parâmetro de consulta
-        url += `?cpf=${cpf}`;
-    }
+        // Se CPF foi passado, busca clientes que possuam esse CPF ou parte dele
+        const query = `SELECT * FROM clientes WHERE cpf LIKE ?`;
 
-    try {
-        const response = await fetch(url);
-        const clientes = await response.json();
-
-        const tabela = document.getElementById('tabela-clientes');
-        tabela.innerHTML = ''; // Limpa a tabela antes de preencher
-
-        if (clientes.length === 0) {
-            // Caso não encontre clientes, exibe uma mensagem
-            tabela.innerHTML = '<tr><td colspan="6">Nenhum cliente encontrado.</td></tr>';
-        } else {
-            clientes.forEach(cliente => {
-                const linha = document.createElement('tr');
-                linha.innerHTML = `
-                    <td>${cliente.codigo}</td>
-                    <td>${cliente.nome}</td>
-                    <td>${cliente.idade}</td>
-                    <td>${cliente.telefone}</td>
-                    <td>${cliente.emergencia}</td>
-                    <td>${cliente.endereco}</td>
-                    <td>${cliente.email}</td>
-                    <td>${cliente.cpf}</td>
-                `;
-                tabela.appendChild(linha);
-            });
-        }
-    } catch (error) {
-        console.error('Erro ao listar clientes:', error);
-    }
-}
-// Função para atualizar as informações do cliente
-async function alterarCliente() {
-    const codigo = document.getElementById('codigo').value;
-    const nome = document.getElementById('nome').value;
-    const idade = document.getElementById('idade').value;
-    const telefone = document.getElementById('telefone').value;
-    const emergencia = document.getElementById('emergencia').value;
-    const endereco = document.getElementById('endereco').value;
-    const email = document.getElementById('email').value;
-    const cpf = document.getElementById('cpf').value;
-
-    const clienteAtualizado = {
-        codigo,
-        nome,
-        idade, 
-        telefone,
-        emergencia,
-        endereco,
-        email,
-        cpf
-    };
-
-    try {
-        const response = await fetch(`/clientes/cpf/${cpf}`, {
-            method: 'PUT',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(clienteAtualizado)
+        db.all(query, [`%${cpf}%`], (err, rows) => {
+            if (err) {
+                console.error(err);
+                return res
+                    .status(500)
+                    .json({ message: "Erro ao buscar clientes." });
+            }
+            res.json(rows); // Retorna os clientes encontrados ou um array vazio
         });
+    } else {
+        // Se CPF não foi passado, retorna todos os clientes
+        const query = `SELECT * FROM clientes`;
 
-        if (response.ok) {
-            alert('Cliente atualizado com sucesso!');
-        } else {
-            const errorMessage = await response.text();
-            alert('Erro ao atualizar cliente: ' + errorMessage);
-        }
-    } catch (error) {
-        console.error('Erro ao atualizar cliente:', error);
-        alert('Erro ao atualizar cliente.');
+        db.all(query, (err, rows) => {
+            if (err) {
+                console.error(err);
+                return res
+                    .status(500)
+                    .json({ message: "Erro ao buscar clientes." });
+            }
+            res.json(rows); // Retorna todos os clientes
+        });
     }
-}
-async function limpaFormulario() {
-    const codigo = document.getElementById('codigo').value;
-    document.getElementById('nome').value = '';
-    document.getElementById('idade').value = '';
-    const telefone = document.getElementById('telefone').value;
-    const emergencia = document.getElementById('emergencia').value;
-    const endereco = document.getElementById('endereco').value;
-    document.getElementById('email').value = '';
-    const cpf = document.getElementById('cpf').value;
-}
+});
+
+// Atualizar cliente
+app.put("/clientes/cpf/:cpf", (req, res) => {
+    const { cpf } = req.params;
+    const { nome, email, telefone, endereco } = req.body;
+
+    const query = `UPDATE clientes SET nome = ?, email = ?, telefone = ?, endereco = ? WHERE cpf = ?`;
+    db.run(query, [nome, email, telefone, endereco, cpf], function (err) {
+        if (err) {
+            return res.status(500).send("Erro ao atualizar cliente.");
+        }
+        if (this.changes === 0) {
+            return res.status(404).send("Cliente não encontrado.");
+        }
+        res.send("Cliente atualizado com sucesso.");
+    });
+});
+
+// Teste para verificar se o servidor está rodando
+app.get("/", (req, res) => {
+    res.send("Servidor está rodando e tabelas criadas!");
+});
+
+// Iniciando o servidor
+app.listen(port, () => {
+    console.log(`Servidor rodando na porta ${port}`);
+});
