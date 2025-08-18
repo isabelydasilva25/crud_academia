@@ -1,5 +1,4 @@
 async function incluirCliente(event) {
-    alert("asdf");
     event.preventDefault();
     
 
@@ -27,7 +26,7 @@ async function incluirCliente(event) {
         const result = await response.json();
         if (response.ok) {
             alert("Cliente cadastrado com sucesso!");
-            document.getElementById("cliente-form").reset();
+            document.getElementById("formCliente").reset();
         } else {
             alert(`Erro: ${result.message}`);
         }
