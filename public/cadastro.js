@@ -124,12 +124,12 @@ async function alterarCliente() {
     }
 }
 async function limpaFormulario() {
-    const codigo = document.getElementById('codigo').value;
+    document.getElementById('codigo').value ='';
     document.getElementById('nome').value = '';
     document.getElementById('idade').value = '';
-    const telefone = document.getElementById('telefone').value;
-    const emergencia = document.getElementById('emergencia').value;
-    const endereco = document.getElementById('endereco').value;
+    document.getElementById('telefone').value = '';
+    document.getElementById('emergencia').value ='';
+    document.getElementById('endereco').value = '';
     document.getElementById('email').value = '';
-    const cpf = document.getElementById('cpf').value;
+    document.getElementById('cpf').value = '';
 }
