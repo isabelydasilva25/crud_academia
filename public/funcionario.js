@@ -1,179 +1,130 @@
-// Array para armazenar os funcionários
-let funcionarios = JSON.parse(localStorage.getItem('funcionarios')) || [];
+async function incluirCliente(event) {
+    event.preventDefault();
 
-// Função para incluir um novo funcionário
-function incluirFuncionario() {
-    const codigo = document.getElementById('codigo').value;
-    const nome = document.getElementById('nome').value;
-    const email = document.getElementById('email').value;
-    const telefone = document.getElementById('telefone').value;
-    const endereco = document.getElementById('endereco').value;
 
-    // Validação simples
-    if (!codigo || !nome || !email || !telefone || !endereco) {
-        alert('Por favor, preencha todos os campos!');
-        return;
-    }
 
-    // Verifica se o código já existe
-    if (funcionarios.some(func => func.codigo === codigo)) {
-        alert('Já existe um funcionário com este código!');
-        return;
-    }
-
-    // Adiciona o novo funcionário
-    const novoFuncionario = {
-        codigo,
-        nome,
-        email,
-        telefone,
-        endereco
+    const funcionario = {
+        codigo: document.getElementById("codigo").value,
+        nome: document.getElementById("nome").value,
+        cpf: document.getElementById("cpf").value
+        email: document.getElementById("email").value,
+        telefone: document.getElementById("telefone").value,
+        endereco: document.getElementById("endereco").value,
+        idade: document.getElementById("idade").value
     };
 
-    funcionarios.push(novoFuncionario);
-    salvarNoLocalStorage();
-    limparFormulario();
-    alert('Funcionário cadastrado com sucesso!');
-}
-
-// Função para excluir um funcionário
-function excluirFuncionario() {
-    const codigo = document.getElementById('codigo').value;
-
-    if (!codigo) {
-        alert('Por favor, informe o código do funcionário a ser excluído!');
-        return;
-    }
-
-    const index = funcionarios.findIndex(func => func.codigo === codigo);
-
-    if (index === -1) {
-        alert('Funcionário não encontrado!');
-        return;
-    }
-
-    if (confirm(`Tem certeza que deseja excluir o funcionário ${funcionarios[index].nome}?`)) {
-        funcionarios.splice(index, 1);
-        salvarNoLocalStorage();
-        limparFormulario();
-        alert('Funcionário excluído com sucesso!');
-    }
-}
-
-// Função para alterar um funcionário
-function alterarFuncionario() {
-    const codigo = document.getElementById('codigo').value;
-    const nome = document.getElementById('nome').value;
-    const email = document.getElementById('email').value;
-    const telefone = document.getElementById('telefone').value;
-    const endereco = document.getElementById('endereco').value;
-
-    if (!codigo) {
-        alert('Por favor, informe o código do funcionário a ser alterado!');
-        return;
-    }
-
-    const funcionario = funcionarios.find(func => func.codigo === codigo);
-
-    if (!funcionario) {
-        alert('Funcionário não encontrado!');
-        return;
-    }
-
-    if (confirm(`Tem certeza que deseja alterar os dados do funcionário ${funcionario.nome}?`)) {
-        funcionario.nome = nome;
-        funcionario.email = email;
-        funcionario.telefone = telefone;
-        funcionario.endereco = endereco;
-        
-        salvarNoLocalStorage();
-        alert('Funcionário alterado com sucesso!');
-    }
-}
-
-// Função para consultar todos os funcionários
-function consultarFuncionarios() {
-    const tabelaCorpo = document.getElementById('tabelaCorpo');
-    tabelaCorpo.innerHTML = '';
-
-    if (funcionarios.length === 0) {
-        tabelaCorpo.innerHTML = '<tr><td colspan="6">Nenhum funcionário cadastrado</td></tr>';
-    } else {
-        funcionarios.forEach(funcionario => {
-            const row = document.createElement('tr');
-            row.innerHTML = `
-                <td>${funcionario.codigo}</td>
-                <td>${funcionario.nome}</td>
-                <td>${funcionario.email}</td>
-                <td>${funcionario.telefone}</td>
-                <td>${funcionario.endereco}</td>
-                <td>
-                    <button onclick="carregarParaEdicao('${funcionario.codigo}')">Editar</button>
-                    <button onclick="confirmarExclusao('${funcionario.codigo}')">Excluir</button>
-                </td>
-            `;
-            tabelaCorpo.appendChild(row);
+    try {
+        const response = await fetch('/clientes', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(cliente)
         });
-    }
 
-    document.getElementById('tabelaConsulta').style.display = 'block';
-}
-
-// Função para carregar dados para edição
-function carregarParaEdicao(codigo) {
-    const funcionario = funcionarios.find(func => func.codigo === codigo);
-    
-    if (funcionario) {
-        document.getElementById('codigo').value = funcionario.codigo;
-        document.getElementById('nome').value = funcionario.nome;
-        document.getElementById('email').value = funcionario.email;
-        document.getElementById('telefone').value = funcionario.telefone;
-        document.getElementById('endereco').value = funcionario.endereco;
-        
-        document.getElementById('tabelaConsulta').style.display = 'none';
-    }
-}
-
-// Função para confirmar exclusão da tabela
-function confirmarExclusao(codigo) {
-    if (confirm('Tem certeza que deseja excluir este funcionário?')) {
-        const index = funcionarios.findIndex(func => func.codigo === codigo);
-        
-        if (index !== -1) {
-            funcionarios.splice(index, 1);
-            salvarNoLocalStorage();
-            consultarFuncionarios(); // Atualiza a tabela
-            alert('Funcionário excluído com sucesso!');
+        const result = await response.json();
+        if (response.ok) {
+            alert("Cliente cadastrado com sucesso!");
+            document.getElementById("formfuncionario").reset();
+        } else {
+            alert(`Erro: ${result.message}`);
         }
+    } catch (err) {
+        console.error("Erro na solicitação:", err);
+        alert("Erro ao cadastrar cliente.");
     }
 }
 
-// Função para fechar a consulta
-function fecharConsulta() {
-    document.getElementById('tabelaConsulta').style.display = 'none';
-}
 
-// Função para abrir a página de cargo
-function abrirCargo() {
-    window.open('cargo.html', '_blank');
-}
 
-// Função para voltar
-function voltar() {
-    window.location.href = 'escolha.html';
-}
 
-// Função para limpar o formulário
-function limparFormulario() {
-    document.getElementById('formFuncionario').reset();
-}
 
-// Função para salvar no localStorage
-function salvarNoLocalStorage() {
-    localStorage.setItem('funcionarios', JSON.stringify(funcionarios));
-}
+// Função para listar todos os funcionarios ou buscar funcionarios por CPF
+async function consultarFuncionario() {
+    const cpf = document.getElementById('cpf').value.trim();  // Pega o valor do CPF digitado no input
 
-// Carrega os funcionários ao iniciar a página
-document.addEventListener('DOMContentLoaded', function() {
-    // Pode adicionar mais lógica de inicialização aqui se necessário
-});
+    let url = '/funcionario';  // URL padrão para todos os funcionarios
+
+    if (cpf) {
+        // Se CPF foi digitado, adiciona o parâmetro de consulta
+        url += `?cpf=${cpf}`;
+    }
+
+    try {
+        const response = await fetch(url);
+        const funcionario = await response.json();
+
+        const tabela = document.getElementById('tabela-funcionario');
+        tabela.innerHTML = ''; // Limpa a tabela antes de preencher
+
+        if (clientes.length === 0) {
+            // Caso não encontre funcionario, exibe uma mensagem
+            tabela.innerHTML = '<tr><td colspan="6">Nenhum funcionario encontrado.</td></tr>';
+        } else {
+            clientes.forEach(funcionario => {
+                const linha = document.createElement('tr');
+                linha.innerHTML = `
+                    <td>${funcionario.codigo}</td>
+                    <td>${funcionario.nome}</td>
+                    <td>${funcionario.cpf}</td>
+                    <td>${funcionario.email}</td>
+                    <td>${funcionario.telefone}</td>
+                    <td>${funcionario.endereco}</td>
+                    <td>${funcionario.idade}</td>
+                `;
+                tabela.appendChild(linha);
+            });
+        }
+    } catch (error) {
+        console.error('Erro ao listar funcionarios:', error);
+    }
+}
+// Função para atualizar as informações do funcionario
+async function alterarfuncionario() {
+        const codigo: document.getElementById("codigo").value,
+        const nome: document.getElementById("nome").value,
+        const cpf: document.getElementById("cpf").value
+        const email: document.getElementById("email").value,
+        const telefone: document.getElementById("telefone").value,
+        const endereco: document.getElementById("endereco").value,
+        const idade: document.getElementById("idade").value
+
+    const funcionarioAtualizado = {
+        codigo,
+        nome,
+        cpf, 
+        email,
+        telefone,
+        endereco,
+        idade
+    };
+
+    try {
+        const response = await fetch(`/funcionario/cpf/${cpf}`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(funcionarioAtualizado)
+        });
+
+        if (response.ok) {
+            alert('Funcionariio atualizado com sucesso!');
+        } else {
+            const errorMessage = await response.text();
+            alert('Erro ao atualizar funcionario: ' + errorMessage);
+        }
+    } catch (error) {
+        console.error('Erro ao atualizar funcionario:', error);
+        alert('Erro ao atualizar funcionario.');
+    }
+}
+async function limpaFormulario() {
+    document.getElementById('codigo').value ='';
+    document.getElementById('nome').value = '';
+    document.getElementById('cpf').value = '';
+    document.getElementById('email').value = '';
+    document.getElementById('telefone').value = '';
+    document.getElementById('endereco').value = '';
+    document.getElementById('idade').value = '';
+}
