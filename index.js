@@ -36,12 +36,26 @@ db.serialize(() => {
         )
     `);
 
+    db.run(`
+    CREATE TABLE if not exists funcionario (
+  id INTEGER primary key AUTOINCREMENT,
+  cargo VARCHAR(100) NOT NULL,
+  nome VARCHAR(100) NOT NULL,
+  cpf VARCHAR(14) NOT NULL UNIQUE,
+  endereco TEXT,
+  telefone VARCHAR(15),
+  idade INTEGER
+  )
+  `);
+    
+
     console.log("Tabelas criadas com sucesso.");
 });
 
 ///////////////////////////// Rotas para Clientes /////////////////////////////
 ///////////////////////////// Rotas para Clientes /////////////////////////////
 ///////////////////////////// Rotas para Clientes /////////////////////////////
+
 
 // Cadastrar cliente
 app.post("/clientes", (req, res) => {
@@ -118,6 +132,78 @@ app.put("/clientes/cpf/:cpf", (req, res) => {
         res.send("Cliente atualizado com sucesso.");
     });
 });
+
+///////////////////////////// Rotas para Funcionario /////////////////////////////
+///////////////////////////// Rotas para Funcionario /////////////////////////////
+///////////////////////////// Rotas para Funcionario /////////////////////////////
+
+
+// Cadastrar funcionario
+app.post('/funcionario', (req, res) => {
+    const { nome, cpf, email, telefone, endereco, idade } = req.body;
+
+    if (!nome || !cpf) {
+        return res.status(400).send('Nome e CPF são obrigatórios.');
+    }
+
+    const query = `INSERT INTO funcionario (nome, cpf, email, telefone, endereco, idade) VALUES (?, ?, ?, ?, ?, ?)`;
+    db.run(query, [nome, cpf, email, telefone, endereco, idade], function (err) {
+        if (err) {
+            return res.status(500).send('Erro ao cadastrar funcionario.');
+        }
+        res.status(201).send({ id: this.lastID, message: 'Funcionario cadastrado com sucesso.' });
+    });
+});
+
+// Listar funcionario
+// Endpoint para listar todos os funcionarios ou buscar por CPF
+app.get('/funcionario', (req, res) => {
+    const cpf = req.query.cpf || '';  // Recebe o CPF da query string (se houver)
+
+    if (cpf) {
+        // Se CPF foi passado, busca funcionarios que possuam esse CPF ou parte dele
+        const query = `SELECT * FROM funcionario WHERE cpf LIKE ?`;
+
+        db.all(query, [`%${cpf}%`], (err, rows) => {
+            if (err) {
+                console.error(err);
+                return res.status(500).json({ message: 'Erro ao buscar funcionarios.' });
+            }
+            res.json(rows);  // Retorna os funcionarios encontrados ou um array vazio
+        });
+    } else {
+        // Se CPF não foi passado, retorna todos os funcionarios
+        const query = `SELECT * FROM funcionario`;
+
+        db.all(query, (err, rows) => {
+            if (err) {
+                console.error(err);
+                return res.status(500).json({ message: 'Erro ao buscar funcionarios.' });
+            }
+            res.json(rows);  // Retorna todos os funcionarios
+        });
+    }
+});
+
+
+
+// Atualizar funcionario
+app.put('/funcionario/cpf/:cpf', (req, res) => {
+    const { cpf } = req.params;
+    const { nome, email, telefone, endereco, idade } = req.body;
+
+    const query = `UPDATE funcionario SET nome = ?, email = ?, telefone = ?, endereco = ?, idade = ?, WHERE cpf = ?`;
+    db.run(query, [nome, cpf, email, telefone, endereco, idade], function (err) {
+        if (err) {
+            return res.status(500).send('Erro ao atualizar funcionario.');
+        }
+        if (this.changes === 0) {
+            return res.status(404).send('Funcionario não encontrado.');
+        }
+        res.send('Funcionario atualizado com sucesso.');
+    });
+});
+
 
 // Teste para verificar se o servidor está rodando
 app.get("/", (req, res) => {
