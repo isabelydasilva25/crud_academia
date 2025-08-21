@@ -3,73 +3,87 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Funcionário</title>
+    <title>Cadastro de Funcionário</title>
     <link rel="stylesheet" href="funcionario.css">
+    <script src="funcionario.js"></script>
+
 </head>
 <body>
-    <header>
-         <img class="logo" src="imagens/logoo.png">
-         <img class="logo2" src="imagens/ccmts.jfif">
-         <img class="logo3" src="imagens/parana.png">
-    </header>
-    <nav></nav>
-    <main>
-      <section id="planos">
-         <h2>Cadastro do funcionario</h2>
-         <form class="Cadastro" id="formFuncionario">
-               <label for="codigo">Código funcionário</label>
-               <input type="text" name="codigo_funcionario" id="codigo" placeholder="Código">
+  <header>
+    <img class="logo" src="imagens/logoo.png">
+     <img class="logo2" src="imagens/ccmts.jfif">
+     <img class="logo3" src="imagens/parana.png">
+  </header>
+<nav></nav>
+<main>
 
-               <label for="nome">Nome Funcionário</label>
-               <input type="text" name="nome_funcionario" id="nome" placeholder="Nome">
-
-               <label for="email"><em>E-mail</em></label>
-               <input type="email" name="email" id="email" placeholder="E-mail">
-
-               <label for="telefone">Telefone</label>
-               <input type="tel" name="telefone" id="telefone" placeholder="Telefone">
-
-               <label for="endereco">Endereço</label>
-               <input type="text" name="endereco" id="endereco" placeholder="Endereço">
-         </form>
-         <div class="container_botoes">
-            <button type="button" class="botao1" onclick="abrirCargo()">Cargo</button>
-            <button type="button" class="botao" onclick="incluirFuncionario()">Incluir</button>
-            <button type="button" class="botao2" onclick="excluirFuncionario()">Excluir</button>
-            <button type="button" class="botao3" onclick="alterarFuncionario()">Alterar</button>
-            <button type="button" class="botao4" onclick="consultarFuncionarios()">Consultar</button>
-            <button type="button" class="botao5" onclick="voltar()">Voltar</button>
-         </div>
-
-         <div id="tabelaConsulta" style="display: none; margin-top: 20px;">
-            <h3>Consulta de Funcionários</h3>
-            <div style="overflow-x: auto;">
-               <table id="tabelaFuncionarios">
-                  <thead>
-                     <tr>
-                        <th>Código</th>
-                        <th>Nome</th>
-                        <th>E-mail</th>
-                        <th>Telefone</th>
-                        <th>Endereço</th>
-                        <th>Ações</th>
-                     </tr>
-                  </thead>
-                  <tbody id="tabelaCorpo">
-                     <!-- Os dados serão inseridos aqui via JavaScript -->
-                  </tbody>
-               </table>
+<div id="main-container">
+    <h1>Cadastro do funcionario</h1>
+    <form class="Cadastro" id="formfuncionario">
+        <div class="full-box">
+            <label for="codigo">Código</label>
+            <input type="text" id="codigo" maxlength="11" placeholder="Digite o Código" />
+        </div>
+        <div class="full-box">
+            <label for="nome">Nome:</label>
+            <input type="text" id="nome" name="nome" placeholder="Digite o nome completo" required>
+        </div>
+        <div class="half-box">
+            <label for="cpf">CPF:</label>
+            <input type="text" id="cpf" name="cpf" placeholder="Digite o CPF" required>
             </div>
-            <button type="button" class="botao5" onclick="fecharConsulta()" style="margin-top: 10px;">Fechar Consulta</button>
+        <div class="half-box">
+            <label for="email">E-mail:</label>
+            <input type="email" id="email" name="email" placeholder="Digite o e-mail" required>
+        </div>
+        <div class="half-box">
+            <label for="telefone">Telefone:</label>
+            <input type="text" id="telefone" name="telefone" placeholder="Digite o telefone" required>
+        </div>
+        <div class="half-box">
+            <label for="endereco">Endereço:</label>
+            <input type="text" id="endereco" name="endereco" placeholder="Digite o endereço" required>
+        </div>
+        <div class="half-box">
+            <label for="idade">Idade:</label>
+            <input type="number" id="idade" name="idade" placeholder="Digite a idade" required>
+        </div>
+     </form>
+    <div class="container_botoes">
+            <button class="botao1" onclick="incluirCliente(event)">Incluir</button>
+            <button class="botao2" onclick="excluirCliente()">Excluir</button>
+            <button class="botao3" onclick="alterarfuncionario()">Alterar</button>
+            <button class="botao4" onclick="consultarFuncionario()">Consultar</button>
+            <button class="botao5" onclick="limpaFormulario()">Limpar</button>
          </div>
+      </section>
+
+    <table border="1">
+        <thead>
+            <tr>
+                <th>Codigo</th>
+                <th>Nome</th>
+                <th>CPF</th>
+                <th>Email</th>
+                <th>Telefone</th>
+                <th>Endereço</th>
+                <th>Idade</th>
+            </tr>
+        </thead>
+        <tbody id="tabela-funcionario">
+            <!-- Linhas serão preenchidas pelo JavaScript -->
+        </tbody>
+    </table>
+
+ </div>
+    <button class="botao5" onclick="voltarParaCadastro()">Voltar</button>
       </section>
     </main>
 
-    <footer>
-         <img class="logo4" src="imagens/gimc2.png">
-         <P>&COPY; 2025 academia Gym-Fit - Todos os direitos reservados.</P>
-    </footer>
 
-    <script src="funcionario.js"></script>
+<footer>
+    <img class="logo4" src="imagens/gimc2.png">
+     <p>2025 - Todos os direitos reservados</p>
+</footer>
 </body>
 </html>
