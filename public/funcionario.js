@@ -13,26 +13,27 @@ async function incluirfuncionario(event) {
     };
 
     try {
-        const response = await fetch('/clientes', {
+        const response = await fetch('/funcionario', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify(cliente)
+            body: JSON.stringify(funcionario)
         });
 
         const result = await response.json();
         if (response.ok) {
-            alert("Cliente cadastrado com sucesso!");
-            document.getElementById("formfuncionario").reset();
+            alert("Funcionario cadastrado com sucesso!");
+            document.getElementById("formFuncionario").reset();
         } else {
             alert(`Erro: ${result.message}`);
         }
     } catch (err) {
         console.error("Erro na solicitação:", err);
-        alert("Erro ao cadastrar cliente.");
+        alert("Erro ao cadastrar funcionario..");
     }
 }
+
 
 // Função para listar todos os funcionarios ou buscar funcionarios por CPF
 async function consultarFuncionario() {
@@ -52,11 +53,11 @@ async function consultarFuncionario() {
         const tabela = document.getElementById('tabela-funcionario');
         tabela.innerHTML = ''; // Limpa a tabela antes de preencher
 
-        if (clientes.length === 0) {
+        if (funcionario.length === 0) {
             // Caso não encontre funcionario, exibe uma mensagem
             tabela.innerHTML = '<tr><td colspan="6">Nenhum funcionario encontrado.</td></tr>';
         } else {
-            clientes.forEach(funcionario => {
+            funcionario.forEach(funcionario => {
                 const linha = document.createElement('tr');
                 linha.innerHTML = `
                     <td>${funcionario.codigo}</td>
@@ -107,7 +108,7 @@ async function alterarfuncionario() {
         });
 
         if (response.ok) {
-            alert('Funcionariio atualizado com sucesso!');
+            alert('Funcionario atualizado com sucesso!');
         } else {
             const errorMessage = await response.text();
             alert('Erro ao atualizar funcionario: ' + errorMessage);
