@@ -1,49 +1,39 @@
+ // Função para buscar o relatório com filtros
+     function buscarRelatorio() {
+         const codigo = document.getElementById("codigo").value;
+         const nome = document.getElementById("nome").value;
+         const treinos = document.getElementById("treinos").value;
+         const faltas = document.getElementById("faltas").value;
 
-      // Função para buscar o relatório com filtros
-function buscarRelatorio() {
-    const cpf = document.getElementById("codigo").value;
-    const produto = document.getElementById("nome_cliente").value;
-    const dataInicio = document.getElementById("treinos_feitos").value;
-    const dataFim = document.getElementById("faltas").value;
+         // Construir a URL com os parâmetros de filtro
+         let url = `/relatorios?`;
+         if (codigo) url += `codigo=${codigo}&`;
+         if (nome) url += `nome=${nome}&`;
+         if (treinos) url += `treinos=${treinos}&`;
+         if (faltas) url += `faltas=${faltas}&`;
 
-    try {
-        const response = await fetch('/frequencia', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(frequencia)
-        });
+         // Remover o último "&" se presente
+         url = url.slice(0, -1);
 
-        const result = await response.json();
-            if (response.ok) {
-                alert("frequencia cadastrada com sucesso!");
-                document.getElementById("formfrequencia").reset();
-            } else {
-                alert(`Erro: ${result.message}`);
-            }
-        } catch (err) {
-            console.error("Erro na solicitação:", err);
-            alert("Erro ao cadastrar a frequencia.");
-        }
-            // Limpar a tabela
-            const tabelaVendas = document.getElementById("tabela-vendas");
-            tabelaVendas.innerHTML = '';
+         // Fazer a requisição para o servidor
+         fetch(url)
+             .then(response => response.json())
+             .then(data => {
+                 // Limpar a tabela
+                 const tabelaVendas = document.getElementById("tabela-vendas");
+                 tabelaVendas.innerHTML = '';
 
-            // Preencher a tabela com os dados
-            data.forEach(venda => {
-                const tr = document.createElement("tr");
-                tr.innerHTML = `
-                    <td>${venda.id}</td>
-                    <td>${venda.cliente_nome}</td>
-                    <td>${venda.produto_nome}</td>
-                    <td>${venda.quantidade}</td>
-                    <td>${new Date(venda.data).toLocaleString()}</td>
-                `;
-                tabelaVendas.appendChild(tr);
-            });
-        })
-        .catch(error => {
-            console.error('Erro ao buscar relatórios:', error);
-        });
-}
+                 // Preencher a tabela com os dados
+                 data.forEach(frequencia => {
+                     const tr = document.createElement("tr");
+                     tr.innerHTML = `
+                         <td>${frequencia.id}</td>
+                         <td>${frequencia.nome}</td>
+                         <td>${frequencia.treinos_feitos}</td>
+                         <td>${frequencia.faltas}</td>
+                         <td>${new Date(frequencia.data).toLocaleString()}</td>
+                     `;
+                     tabelafrequencia.appendChild(tr);
+                 });
+             })
+     }
