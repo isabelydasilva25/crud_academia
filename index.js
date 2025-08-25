@@ -217,34 +217,80 @@ app.put('/funcionario/cpf/:cpf', (req, res) => {
 
 
 
-//////////////////////rotas para pagamento
-//////////////////////rotas para pagamento
+app.post("/pagamento", (req, res) => {
+    const { codigo, valor, dataPagamento, formaPagamento } =
+        req.body;
 
-app.post('/pagamentos', (req, res) => {
-  const { cliente_codigo, itens } = req.body;
+    if (!codigo) {
+        return res.status(400).send("codigo é obrigatórios.");
+    }
 
-  if (!cliente_codigo || !itens || itens.length === 0) {
-      return res.status(400).send("Dados do pagamento incompletos.");
-  }
-
-  const dataPagamento = new Date().toISOString();
-
-  db.serialize(() => {
-      const insertSaleQuery = `INSERT INTO pagamentos (id_cliente, valor, data_pagamento, forma_pagamento VALUES (?, ?, ?, ?,)`;
-
-      let erroOcorrido = false;
-
-
-          db.run(insertSaleQuery, [cliente_codigo, valor, dataPagamento, formaPagamento], function (err) {
-              if (err) {
-                  console.error("Erro ao registrar pagamento:", err.message);
-                  erroOcorrido = true;
-              }
-          });
-   });
+    const query = `INSERT INTO pagamento (codigo, valor, dataPagamento, formaPagamento) VALUES (?, ?, ?, ?)`;
+    db.run(
+        query,
+        [codigo, valor, dataPagamento, formaPagamento],
+        function (err) {
+            if (err) {
+                return res.status(500).send("Erro ao registrar.");
+            }
+            res.status(201).send({
+                id: this.lastID,
+                message: "pagamento registrado com sucesso.",
+            });
+        },
+    );
 });
 
+// Listar clientes
+// Endpoint para listar todos os clientes ou buscar por CPF
+app.get("/pagamento", (req, res) => {
+    const codigo = req.query.codigo || ""; // Recebe o CPF da query string (se houver)
 
+    if (codigo) {
+        // Se CPF foi passado, busca clientes que possuam esse CPF ou parte dele
+        const query = `SELECT * FROM pagamento WHERE codigo LIKE ?`;
+
+        db.all(query, [`%${codigo}%`], (err, rows) => {
+            if (err) {
+                console.error(err);
+                return res
+                    .status(500)
+                    .json({ message: "Erro ao buscar pagamento." });
+            }
+            res.json(rows); // Retorna os clientes encontrados ou um array vazio
+        });
+    } else {
+        // Se CPF não foi passado, retorna todos os clientes
+        const query = `SELECT * FROM pagamento`;
+
+        db.all(query, (err, rows) => {
+            if (err) {
+                console.error(err);
+                return res
+                    .status(500)
+                    .json({ message: "Erro ao buscar pagamento."});
+            }
+            res.json(rows); // Retorna todos os clientes
+        });
+    }
+});
+
+// Atualizar cliente
+app.put("/pagamento/codigo/:codigo", (req, res) => {
+    const { codigo } = req.params;
+    const { valor, dataPagamento, formaPagamento } = req.body;
+
+    const query = `UPDATE pagamento SET valor = ?, dataPagamento = ?, formaPagamento = ? WHERE codigo = ?`;
+    db.run(query, [codigo, valor, dataPagamento, formaPagamento], function (err) {
+        if (err) {
+            return res.status(500).send("Erro ao registrar pagamento.");
+        }
+        if (this.changes === 0) {
+            return res.status(404).send("pagamento nao encontrado.");
+        }
+        res.send("pagamento registrado com sucesso.");
+    });
+});
 
  ////////////////////////////rotas para frequencia////////////////////////////////
 
