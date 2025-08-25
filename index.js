@@ -39,12 +39,13 @@ db.serialize(() => {
     db.run(`
     CREATE TABLE if not exists funcionario (
   id INTEGER primary key AUTOINCREMENT,
-  cargo VARCHAR(100) NOT NULL,
+  codigo VARCHAR(10),
   nome VARCHAR(100) NOT NULL,
   cpf VARCHAR(14) NOT NULL UNIQUE,
   endereco TEXT,
   telefone VARCHAR(15),
-  idade INTEGER
+  idade INTEGER,
+  cargo VARCHAR(100) NOT NULL,
   )
   `);
     
@@ -140,14 +141,14 @@ app.put("/clientes/cpf/:cpf", (req, res) => {
 
 // Cadastrar funcionario
 app.post('/funcionario', (req, res) => {
-    const { nome, cpf, email, telefone, endereco, idade } = req.body;
+    const { codigo, nome, cpf, email, telefone, endereco, idade, cargo } = req.body;
 
     if (!nome || !cpf) {
         return res.status(400).send('Nome e CPF são obrigatórios.');
     }
 
-    const query = `INSERT INTO funcionario (nome, cpf, email, telefone, endereco, idade) VALUES (?, ?, ?, ?, ?, ?)`;
-    db.run(query, [nome, cpf, email, telefone, endereco, idade], function (err) {
+    const query = `INSERT INTO funcionario (nome, cpf, email, telefone, endereco, idade, cargo) VALUES (?, ?, ?, ?, ?, ?, ?)`;
+    db.run(query, [codigo, nome, cpf, email, telefone, endereco, idade, cargo], function (err) {
         if (err) {
             return res.status(500).send('Erro ao cadastrar funcionario.');
         }
@@ -190,10 +191,10 @@ app.get('/funcionario', (req, res) => {
 // Atualizar funcionario
 app.put('/funcionario/cpf/:cpf', (req, res) => {
     const { cpf } = req.params;
-    const { nome, email, telefone, endereco, idade } = req.body;
+    const { codigo, nome, email, telefone, endereco, idade, cargo } = req.body;
 
-    const query = `UPDATE funcionario SET nome = ?, email = ?, telefone = ?, endereco = ?, idade = ?, WHERE cpf = ?`;
-    db.run(query, [nome, cpf, email, telefone, endereco, idade], function (err) {
+    const query = `UPDATE funcionario SET codigo = ?, nome = ?, email = ?, telefone = ?, endereco = ?, idade = ?, cargo = ?, WHERE cpf = ?`;
+    db.run(query, [nome, email, telefone, endereco, idade, cargo, cpf], function (err) {
         if (err) {
             return res.status(500).send('Erro ao atualizar funcionario.');
         }
@@ -214,28 +215,3 @@ app.get("/", (req, res) => {
 app.listen(port, () => {
     console.log(`Servidor rodando na porta ${port}`);
 });
-//////////////////////rotas para pagamento
-//////////////////////rotas para pagamento
-
-app.post('/pagamentos', (req, res) => {
-  const { cliente_codigo, itens } = req.body;
-
-  if (!cliente_codigo || !itens || itens.length === 0) {
-      return res.status(400).send("Dados do pagamento incompletos.");
-  }
-
-  const dataPagamento = new Date().toISOString();
-
-  db.serialize(() => {
-      const insertSaleQuery = `INSERT INTO pagamentos (id_cliente, valor, data_pagamento, forma_pagamento VALUES (?, ?, ?, ?,)`;
-
-      let erroOcorrido = false;
-
-
-          // Registrar pagamento
-          db.run(insertSaleQuery, [cliente_codigo, valor, dataPagamento, formaPagamento], function (err) {
-              if (err) {
-                  console.error("Erro ao registrar pagamento:", err.message);
-                  erroOcorrido = true;
-              }
-          });
