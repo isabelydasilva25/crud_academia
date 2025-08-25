@@ -37,14 +37,17 @@ db.serialize(() => {
     `);
 
     db.run(`
-    CREATE TABLE if not exists funcionario (
+  
+  CREATE TABLE if not exists funcionario (
   id INTEGER primary key AUTOINCREMENT,
-  cargo VARCHAR(100) NOT NULL,
+  codigo VARCHAR(10),
   nome VARCHAR(100) NOT NULL,
   cpf VARCHAR(14) NOT NULL UNIQUE,
+  email VARCHAR(100),
   endereco TEXT,
   telefone VARCHAR(15),
-  idade INTEGER
+  idade INTEGER,
+  cargo VARCHAR(100)
   )
   `);
 
@@ -58,16 +61,6 @@ db.serialize(() => {
       FOREIGN KEY (id_cliente) REFERENCES clientes(id)
     )
     `);
-    
-    db.run(`
-     CREATE TABLE if not exists frequencia (
-  id_frequencia INTEGER primary key AUTOINCREMENT,
-  cliente varchar(50) not NULL,
-  treinos_feitos varchar(10) NOT NULL,
-  faltas varchar(10) NOT NULL 
-  );
- `)
-    
 
     console.log("Tabelas criadas com sucesso.");
 });
@@ -160,14 +153,14 @@ app.put("/clientes/cpf/:cpf", (req, res) => {
 
 // Cadastrar funcionario
 app.post('/funcionario', (req, res) => {
-    const { nome, cpf, email, telefone, endereco, idade } = req.body;
+    const { codigo, nome, cpf, email, telefone, endereco, idade, cargo } = req.body;
 
     if (!nome || !cpf) {
         return res.status(400).send('Nome e CPF são obrigatórios.');
     }
 
-    const query = `INSERT INTO funcionario (nome, cpf, email, telefone, endereco, idade) VALUES (?, ?, ?, ?, ?, ?)`;
-    db.run(query, [nome, cpf, email, telefone, endereco, idade], function (err) {
+    const query = `INSERT INTO funcionario (codigo, nome, cpf, email, telefone, endereco, idade, cargo) VALUES (?, ?, ?, ?, ?, ?, ?, ?)`;
+    db.run(query, [codigo, nome, cpf, email, telefone, endereco, idade, cargo], function (err) {
         if (err) {
             return res.status(500).send('Erro ao cadastrar funcionario.');
         }
@@ -205,15 +198,13 @@ app.get('/funcionario', (req, res) => {
     }
 });
 
-
-
 // Atualizar funcionario
 app.put('/funcionario/cpf/:cpf', (req, res) => {
     const { cpf } = req.params;
-    const { nome, email, telefone, endereco, idade } = req.body;
+    const { codigo, nome, email, telefone, endereco, idade, cargo } = req.body;
 
-    const query = `UPDATE funcionario SET nome = ?, email = ?, telefone = ?, endereco = ?, idade = ?, WHERE cpf = ?`;
-    db.run(query, [nome, cpf, email, telefone, endereco, idade], function (err) {
+    const query = `UPDATE funcionario SET nome = ?, email = ?, telefone = ?, endereco = ?, idade = ?, cargo = ?, WHERE cpf = ?`;
+    db.run(query, [codigo, nome, cpf, email, telefone, endereco, idade, cargo], function (err) {
         if (err) {
             return res.status(500).send('Erro ao atualizar funcionario.');
         }
@@ -253,10 +244,10 @@ app.post('/pagamentos', (req, res) => {
    });
 });
 
-    
-      
+
+
  ////////////////////////////rotas para frequencia////////////////////////////////
-  
+
       app.post('/frequencia', (req, res) => {
         const { nome, treinos_feitos, faltas} = req.body;
 
@@ -270,25 +261,8 @@ app.post('/pagamentos', (req, res) => {
 
            db.run(insert)
        })
-            
+
    });
- app.post('/frequencia', (req, res) => {
-        const { nome, treinos_feitos, faltas} = req.body;
-
-       if (!nome || !treinos_feitos || !faltas.length === 0){
-           return res.status(400).send('Nome e treinos feitos são obrigatórios.');
-       }
-       db.serialize(() =>{
-           const insertSaleQuery = `INSERT INTO frequencia (nome, treinos_feitos, faltas) VALES (?, ?, ?)`;
-
-           let erroOcorrido = false;
-
-           db.run(insertSaleQuery, [cliente_codigo, nome, treinos_feitos, faltas ], fuction (err){
-               if (err){
-                   console.error("Erro ao registrar frequencia:", err.message);
-                   erroOcorrido = true;
-               }
-       });
             // Teste para verificar se o servidor está rodando
 app.get("/", (req, res) => {
     res.send("Servidor está rodando e tabelas criadas!");
@@ -298,4 +272,3 @@ app.get("/", (req, res) => {
 app.listen(port, () => {
     console.log(`Servidor rodando na porta ${port}`);
 });
-
