@@ -59,6 +59,15 @@ db.serialize(() => {
     )
     `);
     
+    db.run(`
+     CREATE TABLE if not exists frequencia (
+  id_frequencia INTEGER primary key AUTOINCREMENT,
+  cliente varchar(50) not NULL,
+  treinos_feitos varchar(10) NOT NULL,
+  faltas varchar(10) NOT NULL 
+  );
+ `)
+    
 
     console.log("Tabelas criadas com sucesso.");
 });
