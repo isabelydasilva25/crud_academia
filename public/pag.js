@@ -1,40 +1,110 @@
-function buscarRelatorio() {
-    const codigo = document.getElementById("codigo").value;
-    const valor = document.getElementById("valor").value;
-    const dataPagamento = document.getElementById("dataPagamento").value;
-    const formaPagamento = document.getElementById("dataFim").value;
+async function incluirPagamento(event) {
+    event.preventDefault();
+    const pagamento = {
+        codigo: document.getElementById("codigo").value,
+        valor: document.getElementById("valor").value,
+        dataPagamento: document.getElementById("dataPagamento").value,
+        formaPagamento: document.getElementById("formaPagamento").value,
+    };
 
-    // Construir a URL com os parâmetros de filtro
-    let url = `/relatorios?`;
-    if (codigo) url += `codigo=${codigo}&`;
-    if (valor) url += `valor=${valor}&`;
-    if (dataPagamento) url += `dataPagamento=${dataPagamento}&`;
-    if (formaPagamento) url += `formaPagamento=${formaPagamento}&`;
-
-    // Remover o último "&" se presente
-    url = url.slice(0, -1);
-
-    // Fazer a requisição para o servidor
-    fetch(url)
-        .then(response => response.json())
-        .then(data => {
-            // Limpar a tabela
-            const tabelaPagamento = document.getElementById("tabela-pagamento");
-            tabelaVendas.innerHTML = '';
-
-            // Preencher a tabela com os dados
-            data.forEach(pagamento => {
-                const tr = document.createElement("tr");
-                tr.innerHTML = `
-                    <td>${venda.id}</td>
-                    <td>${venda.cliente_nome}</td>
-                    <td>${venda.valor}</td>
-                    <td>${new Date(pagamento.data).toLocaleString()}</td>
-                `;
-                tabelaPagamento.appendChild(tr);
-            });
-        })
-        .catch(error => {
-            console.error('Erro ao buscar relatórios:', error);
+    try {
+        const response = await fetch('/pagamento', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(pagamento)
         });
+
+        const result = await response.json();
+        if (response.ok) {
+            alert("pagamento registrado com sucesso!");
+            document.getElementById("formPagamento").reset();
+        } else {
+            alert(`Erro: ${result.message}`);
+        }
+    } catch (err) {
+        console.error("Erro na solicitação:", err);
+        alert("Erro ao registrar pagamento.");
+    }
 }
+
+
+// Função para listar todos os clientes ou buscar clientes por CPF
+async function consultarPagamento() {
+    const codigo = document.getElementById('codigo').value.trim();  // Pega o valor do CPF digitado no input
+
+    let url = '/pagamento';  // URL padrão para todos os clientes
+
+    if (codigo) {
+        // Se CPF foi digitado, adiciona o parâmetro de consulta
+        url += `?codigo=${codigo}`;
+    }
+
+    try {
+        const response = await fetch(url);
+        const pagamento = await response.json();
+
+        const tabela = document.getElementById('tabela-pagamento');
+        tabela.innerHTML = ''; // Limpa a tabela antes de preencher
+
+        if (pagamento.length === 0) {
+            // Caso não encontre clientes, exibe uma mensagem
+            tabela.innerHTML = '<tr><td colspan="6">Nenhum pagamento encontrado.</td></tr>';
+        } else {
+            clientes.forEach(cliente => {
+                const linha = document.createElement('tr');
+                linha.innerHTML = `
+                    <td>${cliente.codigo}</td>
+                    <td>${cliente.valor}</td>
+                    <td>${cliente.dataPagamento}</td>
+                    <td>${cliente.formaPagamento}</td>
+                `;
+                tabela.appendChild(linha);
+            });
+        }
+    } catch (error) {
+        console.error('Erro ao listar pagamento:', error);
+    }
+}
+// Função para atualizar as informações do cliente
+async function alterarPagamento() {
+    const codigo = document.getElementById('codigo').value;
+    const valor = document.getElementById('valor').value;
+    const dataPagamento = document.getElementById('dataPagamento').value;
+    const formaPagamento = document.getElementById('formaPagamento').value;
+
+    const pagamentoAtualizado = {
+        codigo,
+        valor,
+        dataPagamento, 
+        formaPagamento
+    };
+
+    try {
+        const response = await fetch(`/pagamento/codigo/${codigo}`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(clienteAtualizado)
+        });
+
+        if (response.ok) {
+            alert('Pagamento registrado com sucesso!');
+        } else {
+            const errorMessage = await response.text();
+            alert('Erro ao registrar pagamento: ' + errorMessage);
+        }
+    } catch (error) {
+        console.error('Erro ao atualizar pagamento:', error);
+        alert('Erro ao atualizar pagamento.');
+    }
+}
+async function limpaFormulario() {
+    document.getElementById('codigo').value ='';
+    document.getElementById('valor').value = '';
+    document.getElementById('dataPagameno').value = '';
+    document.getElementById('formaPagamento').value = '';
+}
+
