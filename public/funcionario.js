@@ -1,16 +1,15 @@
-async function incluirCliente(event) {
+async function incluirfuncionario(event) {
     event.preventDefault();
-
-
 
     const funcionario = {
         codigo: document.getElementById("codigo").value,
         nome: document.getElementById("nome").value,
-        cpf: document.getElementById("cpf").value
+        cpf: document.getElementById("cpf").value,
         email: document.getElementById("email").value,
         telefone: document.getElementById("telefone").value,
         endereco: document.getElementById("endereco").value,
-        idade: document.getElementById("idade").value
+        idade: document.getElementById("idade").value,
+        cargo: document.getElementById("cargo").value
     };
 
     try {
@@ -34,10 +33,6 @@ async function incluirCliente(event) {
         alert("Erro ao cadastrar cliente.");
     }
 }
-
-
-
-
 
 // Função para listar todos os funcionarios ou buscar funcionarios por CPF
 async function consultarFuncionario() {
@@ -71,6 +66,7 @@ async function consultarFuncionario() {
                     <td>${funcionario.telefone}</td>
                     <td>${funcionario.endereco}</td>
                     <td>${funcionario.idade}</td>
+                    <td>${funcionario.cargo}</td>
                 `;
                 tabela.appendChild(linha);
             });
@@ -81,13 +77,14 @@ async function consultarFuncionario() {
 }
 // Função para atualizar as informações do funcionario
 async function alterarfuncionario() {
-        const codigo: document.getElementById("codigo").value,
-        const nome: document.getElementById("nome").value,
-        const cpf: document.getElementById("cpf").value
-        const email: document.getElementById("email").value,
-        const telefone: document.getElementById("telefone").value,
-        const endereco: document.getElementById("endereco").value,
-        const idade: document.getElementById("idade").value
+        const codigo = document.getElementById("codigo").value;
+        const nome = document.getElementById("nome").value;
+        const cpf = document.getElementById("cpf").value;
+        const email = document.getElementById("email").value;
+        const telefone = document.getElementById("telefone").value;
+        const endereco = document.getElementById("endereco").value;
+        const idade = document.getElementById("idade").value;
+        const cargo = document.getElementById("cargo").value;
 
     const funcionarioAtualizado = {
         codigo,
@@ -96,7 +93,8 @@ async function alterarfuncionario() {
         email,
         telefone,
         endereco,
-        idade
+        idade,
+        cargo
     };
 
     try {
@@ -127,4 +125,5 @@ async function limpaFormulario() {
     document.getElementById('telefone').value = '';
     document.getElementById('endereco').value = '';
     document.getElementById('idade').value = '';
+    document.getElementById('cargo').value = '';
 }
