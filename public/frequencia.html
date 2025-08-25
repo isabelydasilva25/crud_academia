@@ -36,16 +36,16 @@
                 </div>
             
             <div class="container_botoes">
-                <button id="btnIncluir" class="botao">Incluir</button>
-                <button id="btnExcluir" class="botao2">Excluir</button>
-                <button id="btnAlterar" class="botao3">Alterar</button>
-                <button id="btnConsultar" class="botao4">Consultar</button>
-                <a href="escolha.html" class="botao5">Voltar</a>
+                <button class="botao1" onclick="incluirfrequencia(event)">Incluir</button>
+                <button class="botao2" onclick="excluirCliente()">Excluir</button>
+                <button class="botao3" onclick="alterarfuncionario()">Alterar</button>
+                <button class="botao4" onclick="consultarFuncionario()">Consultar</button>
+                <button class="botao5" onclick="limpaFormulario()">Limpar</button>
             </div>
-            
-            <div id="resultados" class="resultados-container">
+            </section>
+
                 <h3>Registros de Frequência</h3>
-                <table id="tabelaFrequencia">
+                <table border="1">
                     <thead>
                         <tr>
                             <th>Código</th>
@@ -54,19 +54,20 @@
                             <th>Faltas</th>
                         </tr>
                     </thead>
-                    <tbody id="tabelaCorpo">
+                    <tbody id="tabela-frequencia">
                         <!-- Os dados serão inseridos aqui via JavaScript -->
                     </tbody>
                 </table>
-            </div>
-        </section>
+           
+        </div>
+        <button class="botao5" onclick="voltarParaCadastro()">Voltar</button>
+          </section>
     </main>
 
     <footer>
-        <img class="logo4" src="imagens/gimc2.png" alt="GIMC">
-        <p>&copy; 2025 - Todos os direitos reservados.</p>
+        <img class="logo4" src="imagens/gimc2.png"
+        <p>2025 - Todos os direitos reservados</p>
     </footer>
     
-    <script src="frequencia.js"></script>
 </body>
 </html>
