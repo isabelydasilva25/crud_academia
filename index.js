@@ -234,13 +234,16 @@ app.post('/pagamentos', (req, res) => {
       let erroOcorrido = false;
 
 
-          // Registrar pagamento
           db.run(insertSaleQuery, [cliente_codigo, valor, dataPagamento, formaPagamento], function (err) {
               if (err) {
                   console.error("Erro ao registrar pagamento:", err.message);
                   erroOcorrido = true;
               }
           });
+   });
+});
+
+    
       
  ////////////////////////////rotas para frequencia////////////////////////////////
   
@@ -258,7 +261,7 @@ app.post('/pagamentos', (req, res) => {
            db.run(insert)
        })
             
-   }
+   });
             // Teste para verificar se o servidor está rodando
 app.get("/", (req, res) => {
     res.send("Servidor está rodando e tabelas criadas!");
@@ -268,3 +271,4 @@ app.get("/", (req, res) => {
 app.listen(port, () => {
     console.log(`Servidor rodando na porta ${port}`);
 });
+
