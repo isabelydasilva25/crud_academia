@@ -216,7 +216,6 @@ app.put('/funcionario/cpf/:cpf', (req, res) => {
 
 
 
-
 //////////////////////rotas para pagamento
 //////////////////////rotas para pagamento
 
@@ -242,8 +241,10 @@ app.post('/pagamentos', (req, res) => {
                   erroOcorrido = true;
               }
           });
+      
  ////////////////////////////rotas para frequencia////////////////////////////////
-   app.post('/frequencia', (req, res) => {
+  
+      app.post('/frequencia', (req, res) => {
         const { nome, treinos_feitos, faltas} = req.body;
 
        if (!nome || !treinos_feitos || !faltas.length === 0){
