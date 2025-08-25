@@ -58,6 +58,7 @@ db.serialize(() => {
       FOREIGN KEY (id_cliente) REFERENCES clientes(id)
     )
     `);
+    
 
     console.log("Tabelas criadas com sucesso.");
 });
@@ -262,6 +263,23 @@ app.post('/pagamentos', (req, res) => {
        })
             
    });
+ app.post('/frequencia', (req, res) => {
+        const { nome, treinos_feitos, faltas} = req.body;
+
+       if (!nome || !treinos_feitos || !faltas.length === 0){
+           return res.status(400).send('Nome e treinos feitos são obrigatórios.');
+       }
+       db.serialize(() =>{
+           const insertSaleQuery = `INSERT INTO frequencia (nome, treinos_feitos, faltas) VALES (?, ?, ?)`;
+
+           let erroOcorrido = false;
+
+           db.run(insertSaleQuery, [cliente_codigo, nome, treinos_feitos, faltas ], fuction (err){
+               if (err){
+                   console.error("Erro ao registrar frequencia:", err.message);
+                   erroOcorrido = true;
+               }
+       });
             // Teste para verificar se o servidor está rodando
 app.get("/", (req, res) => {
     res.send("Servidor está rodando e tabelas criadas!");
