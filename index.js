@@ -214,3 +214,28 @@ app.get("/", (req, res) => {
 app.listen(port, () => {
     console.log(`Servidor rodando na porta ${port}`);
 });
+//////////////////////rotas para pagamento
+//////////////////////rotas para pagamento
+
+app.post('/pagamentos', (req, res) => {
+  const { cliente_codigo, itens } = req.body;
+
+  if (!cliente_codigo || !itens || itens.length === 0) {
+      return res.status(400).send("Dados do pagamento incompletos.");
+  }
+
+  const dataPagamento = new Date().toISOString();
+
+  db.serialize(() => {
+      const insertSaleQuery = `INSERT INTO pagamentos (id_cliente, valor, data_pagamento, forma_pagamento VALUES (?, ?, ?, ?,)`;
+
+      let erroOcorrido = false;
+
+
+          // Registrar pagamento
+          db.run(insertSaleQuery, [cliente_codigo, valor, dataPagamento, formaPagamento], function (err) {
+              if (err) {
+                  console.error("Erro ao registrar pagamento:", err.message);
+                  erroOcorrido = true;
+              }
+          });
