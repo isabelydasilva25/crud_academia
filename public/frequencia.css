@@ -46,6 +46,33 @@ h2 {
     grid-template-columns: 1fr 1fr;
     gap: 15px;
     margin-bottom: 20px;
+    .btn-editar, .btn-excluir {
+        padding: 5px 10px;
+        margin: 0 3px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 14px;
+    }
+
+    .btn-editar {
+        background-color: #4CAF50;
+        color: white;
+    }
+
+    .btn-excluir {
+        background-color: #f44336;
+        color: white;
+    }
+
+    .btn-editar:hover {
+        background-color: #45a049;
+    }
+
+    .btn-excluir:hover {
+        background-color: #d32f2f;
+    }
+
 }
 
 .form-group {
@@ -80,6 +107,168 @@ button, .botao5 {
     border-radius: 4px;
     cursor: pointer;
     font-weight: bold;
+    .btn-editar, .btn-excluir {
+        padding: 5px 10px;
+        margin: 0 3px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 14px;
+    }
+
+    .btn-editar, .btn-excluir {
+        padding: 5px 10px;
+        margin: 0 3px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 14px;
+    }
+
+    .btn-editar {
+        background-color: #4CAF50;
+        color: white;
+    }
+
+    .btn-excluir {
+        background-color: #f44336;
+        color: white;
+    }
+
+    .btn-editar:hover {
+        background-color: #45a049;
+    }
+
+    .btn-excluir:hover {
+        background-color: #d32f2f;
+    }
+
+    .btn-editar, .btn-excluir {
+        padding: 5px 10px;
+        margin: 0 3px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 14px;
+    }
+
+    .btn-editar {
+        background-color: #4CAF50;
+        color: white;
+    }
+
+    .btn-excluir {
+        background-color: #f44336;
+        color: white;
+    }
+
+    .btn-editar:hover {
+        background-color: #45a049;
+    }
+
+    .btn-excluir:hover {
+        background-color: #d32f2f;
+    }
+
+    .btn-editar, .btn-excluir {
+        padding: 5px 10px;
+        margin: 0 3px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 14px;
+    }
+
+    .btn-editar {
+        background-color: #4CAF50;
+        color: white;
+    }
+
+    .btn-excluir {
+        background-color: #f44336;
+        color: white;
+    }
+
+    .btn-editar:hover {
+        background-color: #45a049;
+    }
+
+    .btn-excluir:hover {
+        background-color: #d32f2f;
+    }
+
+    .btn-editar {
+        background-color: #4CAF50;
+        color: white;
+    }
+
+    .btn-excluir {
+        background-color: #f44336;
+        color: white;
+    }
+
+    .btn-editar:hover {
+        background-color: #45a049;
+    }
+
+    .btn-excluir:hover {
+        background-color: #d32f2f;
+    }
+
+    .btn-editar, .btn-excluir {
+        padding: 5px 10px;
+        margin: 0 3px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 14px;
+    }
+
+    .btn-editar {
+        background-color: #4CAF50;
+        color: white;
+    }
+
+    .btn-excluir {
+        background-color: #f44336;
+        color: white;
+    }
+
+    .btn-editar:hover {
+        background-color: #45a049;
+    }
+
+    .btn-excluir:hover {
+        background-color: #d32f2f;
+    }
+
+    .btn-editar, .btn-excluir {
+        padding: 5px 10px;
+        margin: 0 3px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 14px;
+    }
+
+    .btn-editar {
+        background-color: #4CAF50;
+        color: white;
+    }
+
+    .btn-excluir {
+        background-color: #f44336;
+        color: white;
+    }
+
+    .btn-editar:hover {
+        background-color: #45a049;
+    }
+
+    .btn-excluir:hover {
+        background-color: #d32f2f;
+    }
+
     text-decoration: none;
     color: white;
 }
@@ -130,11 +319,65 @@ footer p {
 }
 
 nav {
+    .btn-editar, .btn-excluir {
+        padding: 5px 10px;
+        margin: 0 3px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 14px;
+    }
+
+    .btn-editar {
+        background-color: #4CAF50;
+        color: white;
+    }
+
+    .btn-excluir {
+        background-color: #f44336;
+        color: white;
+    }
+
+    .btn-editar:hover {
+        background-color: #45a049;
+    }
+
+    .btn-excluir:hover {
+        background-color: #d32f2f;
+    }
+
     list-style: none;
     display: flex;
     justify-content: center;
     padding: 10px;
     background-color: #0e2133;
+    .btn-editar, .btn-excluir {
+        padding: 5px 10px;
+        margin: 0 3px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 14px;
+    }
+
+    .btn-editar {
+        background-color: #4CAF50;
+        color: white;
+    }
+
+    .btn-excluir {
+        background-color: #f44336;
+        color: white;
+    }
+
+    .btn-editar:hover {
+        background-color: #45a049;
+    }
+
+    .btn-excluir:hover {
+        background-color: #d32f2f;
+    }
+
 }
 
 nav a {
