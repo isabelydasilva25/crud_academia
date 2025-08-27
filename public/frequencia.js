@@ -1,4 +1,4 @@
-  async function incluirfrequencia(event) {
+async function incluirfrequencia(event) {
      event.preventDefault();
 
 
@@ -6,12 +6,12 @@
      const frequencia = {
          codigo: document.getElementById("codigo").value,
          nome: document.getElementById("nome").value,
-  treinos_feitos:document.getElementById("treinos").value,
-         faltas: document.getElementById("faltas").value,
+         treinos: document.getElementById("treinos").value,
+         faltas: document.getElementById("faltas").value
      };
 
      try {
-         const response = await fetch('/frequecia', {
+         const response = await fetch('/frequencia', {
              method: 'POST',
              headers: {
                  'Content-Type': 'application/json'
@@ -35,7 +35,7 @@
 
 
  // Função para listar todos os clientes ou buscar clientes por CPF
- async function consultarClientes() {
+ async function consultarfrequencia() {
      const codigo = document.getElementById('codigo').value.trim();  // Pega o valor do CPF digitado no input
 
      let url = '/frequencia';  // URL padrão para todos os clientes
@@ -61,7 +61,7 @@
                  linha.innerHTML = `
                      <td>${frequencia.codigo}</td>
                      <td>${frequencia.nome}</td>
-                     <td>${frequencia.treinos_feitos}</td>
+                     <td>${frequencia.treinos}</td>
                      <td>${frequencia.faltas}</td>
                  `;
                  tabela.appendChild(linha);
@@ -72,22 +72,22 @@
      }
  }
  // Função para atualizar as informações do cliente
- async function alterarCliente() {
+ async function alterarfrequencia() {
      const codigo = document.getElementById('codigo').value;
      const nome = document.getElementById('nome').value;
-     const idade = document.getElementById('treinos_feitos').value;
-     const telefone = document.getElementById('faltas').value;
+     const treinos = document.getElementById('treinos').value;
+     const faltas = document.getElementById('faltas').value;
      
 
-     const clienteAtualizado = {
+     const frequencia = {
          codigo,
          nome,
-         treinos_feitos, 
-         faltas,
+         treinos, 
+         faltas
      };
 
      try {
-         const response = await fetch(`/clientes/cpf/${cliente}`, {
+         const response = await fetch(`/frequencia/cpf/${frequencia}`, {
              method: 'PUT',
              headers: {
                  'Content-Type': 'application/json'
@@ -109,7 +109,7 @@
  async function limpaFormulario() {
      document.getElementById('codigo').value ='';
      document.getElementById('nome').value = '';
-     document.getElementById('treinos_feitos').value = '';
+     document.getElementById('treinos').value = '';
      document.getElementById('faltas').value = '';
      
  }
