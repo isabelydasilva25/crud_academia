@@ -3,9 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Formulario</title>
-    <link rel="stylesheet
-    " href="pag.css">                                                         
+    <title>Pagamento</title>
+    <link rel="stylesheet" href="pag.css">  
+    <script src="pag.js"></script>
 </head>
 <body>
     <header>
@@ -17,7 +17,7 @@
     <div id="main-container">
         <h1>Relatórios de Pagamentos</h1>
 
-        <div class="filters">
+        <div class="full-box"">
             <label for="codigo">Código do Cliente:</label>
             <input type="text" id="codigo" placeholder="Digite o Código do cliente">
 
@@ -28,53 +28,34 @@
             <input type="date" id="dataPagamento">
 
             <label for="forma de pagamento">Forma de Pagamento:</label>
-            <input type="text" id="Forma de pagamento" placeholder="Digite a forma de pagamento">
+            <input type="text" id="FormaPagamento" placeholder="Digite a forma de pagamento">
 
             <button onclick="buscarRelatorio()" class="alinhaBtns">Buscar</button>
         </div>
 
-        <h3>Relatório de Pagamentos</h3>
-        <table>
-            <thead>
-                <tr>
-                    <th>ID</th>
-                    <th>Cliente</th>
-                    <th>Produto</th>
-                    <th>Quantidade</th>
-                    <th>Data</th>
-                </tr>
-            </thead>
-            <tbody id="tabela-vendas">
-                <!-- As vendas filtradas aparecerão aqui -->
-            </tbody>
-        </table>
-    </div>
 
    </form>
     <div class="container_botoes">
-            <button class="botao1" onclick="incluirCliente(event)">Incluir</button>
+            <button class="botao1" onclick="incluirPagamentos(event)">Incluir</button>
             <button class="botao2" onclick="excluirCliente()">Excluir</button>
-            <button class="botao3" onclick="alterarCliente()">Alterar</button>
-            <button class="botao4" onclick="consultarClientes()">Consultar</button>
+            <button class="botao3" onclick="alterarPagamentos()">Alterar</button>
+            <button class="botao4" onclick="consultarPagamentos()">Consultar</button>
             <button class="botao5" onclick="limpaFormulario()">Limpar</button>
          </div>
-      </section>
-      <h3>Relatório de Vendas</h3>
-          <table>
-              <thead>
-                  <tr>
-                      <th>ID</th>
-                      <th>Cliente</th>
-                      <th>Produto</th>
-                      <th>Quantidade</th>
-                      <th>Data</th>
-                  </tr>
-              </thead>
-              <tbody id="tabela-vendas">
-                  <!-- As vendas filtradas aparecerão aqui -->
-              </tbody>
-          </table>
-      </div>
+        </section>
+        <table border="1">
+            <thead>
+                <tr>
+                    <th>Codigo</th>
+                    <th>Valor</th>
+                    <th>dataPagamento</th>
+                    <th>formaPagamento</th>   
+                </tr>
+            </thead>
+            <tbody id="tabela-pagamentos">
+                <!-- Linhas serão preenchidas pelo JavaScript -->
+            </tbody>
+        </table>
     </main>
 
     <footer>
