@@ -188,3 +188,22 @@ select {
         max-width: 50px;
     }
 }
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 20px 0;
+}
+
+table th, table td {
+    border: 1px solid #1e1515;
+    padding: 8px;
+    text-align: left;
+}
+
+table th {
+    background-color: #ffffff;
+    font-weight: bold;
+}
+
+
