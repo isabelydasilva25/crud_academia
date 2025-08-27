@@ -62,6 +62,16 @@ db.serialize(() => {
     )
     `);
 
+    db.run(`
+    CREATE TABLE IF NOT EXISTS frequencia (
+     id INTEGER PRIMARY KEY AUTOINCREMENT,
+     codigo VARCHAR(10),
+     nome VARCHAR(100) NOT NULL,
+     treinos INTEGER,
+     faltas INTEGER
+    )
+    `);
+
     console.log("Tabelas criadas com sucesso.");
 });
 
@@ -294,21 +304,83 @@ app.put("/pagamento/codigo/:codigo", (req, res) => {
 
  ////////////////////////////rotas para frequencia////////////////////////////////
 
-      app.post('/frequencia', (req, res) => {
-        const { nome, treinos_feitos, faltas} = req.body;
+      // Cadastrar frequencia
+     app.post("/frequencia", (req, res) => {
+         const { codigo, nome, treinos, faltas } =
+             req.body;
 
-       if (!nome || !treinos_feitos || !faltas.length === 0){
-           return res.status(400).send('Nome e treinos feitos são obrigatórios.');
-       }
-       db.serialize(() =>{
-           const insertSaleQuery = `INSERT INTO frequencia (nome, treinos_feitos, faltas) VALES (?, ?, ?)`;
+         if (!nome || !codigo) {
+             return res.status(400).send("Nome e CPF são obrigatórios.");
+         }
 
-           let erroOcorrido = false;
+         const query = `INSERT INTO frequencia (codigo, nome, treinos, faltas) VALUES (?, ?, ?, ?)`;
+         db.run(
+             query,
+             [codigo, nome, treinos, faltas],
+             function (err) {
+                 if (err) {
+                     return res.status(500).send("Erro ao cadastrar cliente.");
+                 }
+                 res.status(201).send({
+                     id: this.lastID,
+                     message: "Cliente cadastrado com sucesso.",
+                 });
+             },
+         );
+     });
 
-           db.run(insert)
-       })
+     // Listar clientes
+     // Endpoint para listar todos os clientes ou buscar por CPF
+     app.get("/frequencia", (req, res) => {
+         const codigo = req.query.codigo || ""; // Recebe o CPF da query string (se houver)
 
-   });
+         if (codigo) {
+             // Se CPF foi passado, busca clientes que possuam esse CPF ou parte dele
+             const query = `SELECT * FROM frequencia WHERE codigo LIKE ?`;
+
+             db.all(query, [`%${codigo}%`], (err, rows) => {
+                 if (err) {
+                     console.error(err);
+                     return res
+                         .status(500)
+                         .json({ message: "Erro ao buscar frequencia." });
+                 }
+                 res.json(rows); // Retorna os clientes encontrados ou um array vazio
+             });
+         } else {
+             // Se CPF não foi passado, retorna todos os clientes
+             const query = `SELECT * FROM frequencia`;
+
+             db.all(query, (err, rows) => {
+                 if (err) {
+                     console.error(err);
+                     return res
+                         .status(500)
+                         .json({ message: "Erro ao buscar clientes." });
+                 }
+                 res.json(rows); // Retorna todos os clientes
+             });
+         }
+     });
+
+     // Atualizar cliente
+     app.put("/frequencia/codigo/:codigo", (req, res) => {
+         const { codigo } = req.params;
+         const { nome, treinos, faltas } = req.body;
+
+         const query = `UPDATE frequencia SET nome = ?, treinos = ?, codigo= ?, WHERE codigo = ?`;
+         db.run(query, [nome, email, telefone, endereco, cpf], function (err) {
+             if (err) {
+                 return res.status(500).send("Erro ao atualizar cliente.");
+             }
+             if (this.changes === 0) {
+                 return res.status(404).send("Cliente não encontrado.");
+             }
+             res.send("Cliente atualizado com sucesso.");
+         });
+     });
+
+
             // Teste para verificar se o servidor está rodando
 app.get("/", (req, res) => {
     res.send("Servidor está rodando e tabelas criadas!");
