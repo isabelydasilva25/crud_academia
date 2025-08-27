@@ -227,78 +227,77 @@ app.put('/funcionario/cpf/:cpf', (req, res) => {
 
 
 
-app.post("/pagamento", (req, res) => {
-    const { codigo, valor, dataPagamento, formaPagamento } =
+app.post("/pagamentos", (req, res) => {
+    const { codigo, valor, dataPagamento, formaPagamento} =
         req.body;
 
-    if (!codigo) {
-        return res.status(400).send("codigo é obrigatórios.");
+    if (!nome || !codigo) {
+        return res.status(400).send("Nome e Codigo são obrigatórios.");
     }
 
-    const query = `INSERT INTO pagamento (codigo, valor, dataPagamento, formaPagamento) VALUES (?, ?, ?, ?)`;
+    const query = `INSERT INTO pagamentos (codigo, valor, dataPagamento, formaPagamento) VALUES (?, ?, ?, ?)`;
     db.run(
         query,
         [codigo, valor, dataPagamento, formaPagamento],
         function (err) {
             if (err) {
-                return res.status(500).send("Erro ao registrar.");
+                return res.status(500).send("Erro ao cadastrar pagamentos.");
             }
             res.status(201).send({
                 id: this.lastID,
-                message: "pagamento registrado com sucesso.",
+                message: "pagamentos cadastrado com sucesso.",
             });
         },
     );
 });
-
-// Listar clientes
+// Listar pagamento
 // Endpoint para listar todos os clientes ou buscar por CPF
-app.get("/pagamento", (req, res) => {
+app.get("/pagamentos", (req, res) => {
     const codigo = req.query.codigo || ""; // Recebe o CPF da query string (se houver)
 
     if (codigo) {
         // Se CPF foi passado, busca clientes que possuam esse CPF ou parte dele
-        const query = `SELECT * FROM pagamento WHERE codigo LIKE ?`;
+        const query = `SELECT * FROM pagamentos WHERE codigo LIKE ?`;
 
         db.all(query, [`%${codigo}%`], (err, rows) => {
             if (err) {
                 console.error(err);
                 return res
                     .status(500)
-                    .json({ message: "Erro ao buscar pagamento." });
+                    .json({ message: "Erro ao buscar pagamentos." });
             }
             res.json(rows); // Retorna os clientes encontrados ou um array vazio
         });
     } else {
         // Se CPF não foi passado, retorna todos os clientes
-        const query = `SELECT * FROM pagamento`;
+        const query = `SELECT * FROM pagamentos`;
 
         db.all(query, (err, rows) => {
             if (err) {
                 console.error(err);
                 return res
                     .status(500)
-                    .json({ message: "Erro ao buscar pagamento."});
+                    .json({ message: "Erro ao buscar pagamentos."});
             }
             res.json(rows); // Retorna todos os clientes
         });
     }
 });
 
-// Atualizar cliente
-app.put("/pagamento/codigo/:codigo", (req, res) => {
+// Atualizar pagamento
+app.put("/pagamentos/codigo/:codigo", (req, res) => {
     const { codigo } = req.params;
     const { valor, dataPagamento, formaPagamento } = req.body;
 
-    const query = `UPDATE pagamento SET valor = ?, dataPagamento = ?, formaPagamento = ? WHERE codigo = ?`;
+    const query = `UPDATE pagamentos SET valor = ?, dataPagamento = ?, formaPagamento = ? WHERE codigo = ?`;
     db.run(query, [codigo, valor, dataPagamento, formaPagamento], function (err) {
         if (err) {
-            return res.status(500).send("Erro ao registrar pagamento.");
+            return res.status(500).send("Erro ao registrar pagamentos.");
         }
         if (this.changes === 0) {
-            return res.status(404).send("pagamento nao encontrado.");
+            return res.status(404).send("pagamentos nao encontrado.");
         }
-        res.send("pagamento registrado com sucesso.");
+        res.send("pagamentos registrado com sucesso.");
     });
 });
 
