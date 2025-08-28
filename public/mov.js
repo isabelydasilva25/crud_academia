@@ -1,4 +1,4 @@
-async function incluirfrequencia(event){
+async function incluirmovimento(event){
     event.preventDefault();
 
     const movimento = {
@@ -29,7 +29,7 @@ async function incluirfrequencia(event){
   } 
 }
   //funçao para listar movimento
-   async function consultarfrequencia(){
+   async function consultarmovimento(){
      const codigo = document.getElementById('codigo').value.trim();
      let url = '/movimento';
      if (codigo){
