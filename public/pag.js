@@ -1,5 +1,6 @@
 async function incluirPagamento(event) {
     event.preventDefault();
+    
     const pagamentos = {
         codigo: document.getElementById("codigo").value,
         valor: document.getElementById("valor").value,
@@ -52,7 +53,7 @@ async function consultarPagamento() {
             // Caso não encontre clientes, exibe uma mensagem
             tabela.innerHTML = '<tr><td colspan="6">Nenhum pagamento encontrado.</td></tr>';
         } else {
-            clientes.forEach(pagamentos => {
+            pagamentos.forEach(pagamentos => {
                 const linha = document.createElement('tr');
                 linha.innerHTML = `
                     <td>${pagamentos.codigo}</td>
