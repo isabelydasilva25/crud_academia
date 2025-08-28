@@ -1,11 +1,10 @@
-async function incluirPagamentos(event) {
+async function incluirPagamento(event) {
     event.preventDefault();
-    
     const pagamentos = {
         codigo: document.getElementById("codigo").value,
         valor: document.getElementById("valor").value,
         dataPagamento: document.getElementById("dataPagamento").value,
-        formaPagamento: document.getElementById("formaPagamento").value,
+        formaPagamento: document.getElementById("formaPagamento").value
     };
 
     try {
@@ -19,8 +18,8 @@ async function incluirPagamentos(event) {
 
         const result = await response.json();
         if (response.ok) {
-            alert("pagamentos registrado com sucesso!");
-            document.getElementById("formaPagamento").reset();
+            alert("pagamento registrado com sucesso!");
+            document.getElementById("formPagamento").reset();
         } else {
             alert(`Erro: ${result.message}`);
         }
@@ -32,7 +31,7 @@ async function incluirPagamentos(event) {
 
 
 // Função para listar todos os clientes ou buscar clientes por CPF
-async function consultarPagamentos() {
+async function consultarPagamento() {
     const codigo = document.getElementById('codigo').value.trim();  // Pega o valor do CPF digitado no input
 
     let url = '/pagamentos';  // URL padrão para todos os clientes
@@ -46,7 +45,7 @@ async function consultarPagamentos() {
         const response = await fetch(url);
         const pagamentos = await response.json();
 
-        const tabela = document.getElementById('tabela-pagamentos');
+        const tabela = document.getElementById('tabela-pagamento');
         tabela.innerHTML = ''; // Limpa a tabela antes de preencher
 
         if (pagamentos.length === 0) {
@@ -65,17 +64,17 @@ async function consultarPagamentos() {
             });
         }
     } catch (error) {
-        console.error('Erro ao listar pagamentos:', error);
+        console.error('Erro ao listar pagamento:', error);
     }
 }
 // Função para atualizar as informações do cliente
-async function alterarPagamentos() {
+async function alterarPagamento() {
     const codigo = document.getElementById('codigo').value;
     const valor = document.getElementById('valor').value;
     const dataPagamento = document.getElementById('dataPagamento').value;
     const formaPagamento = document.getElementById('formaPagamento').value;
 
-    const pagamentosAtualizado = {
+    const pagamentoAtualizado = {
         codigo,
         valor,
         dataPagamento, 
@@ -88,24 +87,23 @@ async function alterarPagamentos() {
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify(pagamentosAtualizado)
+            body: JSON.stringify(pagamentoAtualizado)
         });
 
         if (response.ok) {
-            alert('Pagamentos registrado com sucesso!');
+            alert('Pagamento registrado com sucesso!');
         } else {
             const errorMessage = await response.text();
-            alert('Erro ao registrar pagamentos: ' + errorMessage);
+            alert('Erro ao registrar pagamento: ' + errorMessage);
         }
     } catch (error) {
-        console.error('Erro ao atualizar pagamentos:', error);
-        alert('Erro ao atualizar pagamentos.');
+        console.error('Erro ao atualizar pagamento:', error);
+        alert('Erro ao atualizar pagamento.');
     }
 }
 async function limpaFormulario() {
-    document.getElementById('codigo').value = '';
+    document.getElementById('codigo').value ='';
     document.getElementById('valor').value = '';
     document.getElementById('dataPagameno').value = '';
     document.getElementById('formaPagamento').value = '';
 }
-
