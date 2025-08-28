@@ -36,7 +36,7 @@ async function consultarcargo() {
 
   let url = '/cargo';  // URL padrão para todos os cargos
 
-  if (cargo) {
+  if (codigo) {
       // Se codigo foi digitado, adiciona o parâmetro de consulta
       url += `?codigo=${codigo}`;
   }
