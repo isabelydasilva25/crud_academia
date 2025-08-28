@@ -244,7 +244,10 @@ app.put('/funcionario/cpf/:cpf', (req, res) => {
     });
 });
 
-\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\pag\\\\\\\\\\\\\\\\\\\\\\\\
+///////////////////////////// Rotas para Pagamentos /////////////////////////////
+///////////////////////////// Rotas para Pagamentos /////////////////////////////
+///////////////////////////// Rotas para Pagamentos /////////////////////////////
+
 
 app.post("/pagamentos", (req, res) => {
     const { codigo, valor, dataPagamento, formaPagamento} =
@@ -320,6 +323,8 @@ app.put("/pagamentos/codigo/:codigo", (req, res) => {
     });
 });
 
+ ////////////////////////////rotas para frequencia////////////////////////////////
+ ////////////////////////////rotas para frequencia////////////////////////////////
  ////////////////////////////rotas para frequencia////////////////////////////////
 
       // Cadastrar frequencia
