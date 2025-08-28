@@ -253,8 +253,8 @@ app.post("/pagamentos", (req, res) => {
     const { codigo, valor, dataPagamento, formaPagamento} =
         req.body;
 
-    if (!nome || !codigo) {
-        return res.status(400).send("Nome e Codigo são obrigatórios.");
+    if (!codigo) {
+        return res.status(400).send("Codigo são obrigatórios.");
     }
 
     const query = `INSERT INTO pagamentos (codigo, valor, dataPagamento, formaPagamento) VALUES (?, ?, ?, ?)`;
