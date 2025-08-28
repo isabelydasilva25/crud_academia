@@ -51,14 +51,14 @@ db.serialize(() => {
   )
   `);
 
-    db.run(`
+     db.run(`
     CREATE TABLE IF NOT EXISTS pagamentos (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
-      id_cliente INTEGER NOT NULL,
+      codigo INTEGER NOT NULL,
       valor REAL NOT NULL,
-      data_pagamento DATE NOT NULL,
-      forma_pagamento VARCHAR(50) NOT NULL,
-      FOREIGN KEY (id_cliente) REFERENCES clientes(id)
+      dataPagamento DATE NOT NULL,
+      formaPagamento VARCHAR(50) NOT NULL,
+      FOREIGN KEY (codigo) REFERENCES pagamentos(id)
     )
     `);
 
@@ -244,7 +244,7 @@ app.put('/funcionario/cpf/:cpf', (req, res) => {
     });
 });
 
-
+\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\pag\\\\\\\\\\\\\\\\\\\\\\\\
 
 app.post("/pagamentos", (req, res) => {
     const { codigo, valor, dataPagamento, formaPagamento} =
