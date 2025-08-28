@@ -555,7 +555,85 @@ app.put("/cargo/codigo/:codigo", (req, res) => {
          });                                                                                    
      });
 
- 
+ \\\\\\\\\\\\\\\\\\\cargo\\\\\\\\\\\\\\\\\\\\\\\\\\\
+
+// Cadastrar cargo
+app.post("/cargo", (req, res) =>{
+    const { codigo, codigofun, funcao } =
+        req.body;
+
+    if (!codigo || !codigofun) {
+        return res.status(400).send("Codigo e Codigofun são obrigatórios.");
+    }
+
+    const query = `INSERT INTO cargo (codigo, codigofun, funcao) VALUES (?, ?, ?)`;
+    db.run(
+        query,
+        [codigo, codigofun, funcao],
+        function (err) {
+            if (err) {
+                return res.status(500).send("Erro ao cadastrar cargo.");
+            }
+            res.status(201).send({
+                id: this.lastID,
+                message: "Cargo cadastrado com sucesso.",
+            });
+        },
+    );
+});
+
+// Listar cargos
+// Endpoint para listar todos os cargos ou buscar por codigo
+app.get("/cargo", (req, res) => {
+    const codigo = req.query.codigo || ""; // Recebe o codigo da query string (se houver)
+
+    if (codigo) {
+        // Se codigo foi passado, busca cargos que possuam esse codigo ou parte dele
+        const query = `SELECT * FROM cargo WHERE codigo LIKE ?`;
+
+        db.all(query, [`%${codigo}%`], (err, rows) => {
+            if (err) {
+                console.error(err);
+                return res
+                    .status(500)
+                    .json({ message: "Erro ao buscar cargos." });
+            }
+            res.json(rows); // Retorna os cargos encontrados ou um array vazio
+        });
+    } else {
+        // Se CPF não foi passado, retorna todos os cargos
+        const query = `SELECT * FROM cargo`;
+
+        db.all(query, (err, rows) => {
+            if (err) {
+                console.error(err);
+                return res
+                    .status(500)
+                    .json({ message: "Erro ao buscar cargos." });
+            }
+            res.json(rows); // Retorna todos os cargos
+        });
+    }
+});
+
+// Atualizar cargo
+app.put("/cargo/codigo/:codigo", (req, res) => {
+    const { codigo } = req.params;
+    const { codigofun, funcao } = req.body;
+
+    const query = `UPDATE cargo SET codigofun = ?, funcao = ? WHERE codigo = ?`;
+    db.run(query, [codigofun, funcao, codigo], function (err) {
+        if (err) {
+            return res.status(500).send("Erro ao atualizar cargo.");
+        }
+        if (this.changes === 0) {
+            return res.status(404).send("Cargo não encontrado.");
+        }
+        res.send("Cargo atualizado com sucesso.");
+    });
+});
+
+
 
             // Teste para verificar se o servidor está rodando
 app.get("/", (req, res) => {
