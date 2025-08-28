@@ -535,23 +535,10 @@ app.put("/cargo/codigo/:codigo", (req, res) => {
                      .json({ message: "Erro ao buscar movimento." });
              }
              res.json(rows); // Retorna todos os movimento
-         });
-         
-     } else {
-         // Se codigo não foi passado, retorna todos os movimento
-         const query = `SELECT * FROM movimento WHERE codigo LIKE ?`;
+            }
+        )};
+    });
 
-         db.all(query, [`%${codigo}%`], (err, rows) =>{
-             if (err){
-                 console.error(err);
-                 return res
-                     .status(500)
-                     .json({ message: "Erro ao buscar movimento." });
-             }
-             res.json(rows);
-         });
-     }
-});
      // Atualizar movimento
      app.put("/movimento/codigo/:codigo", (req, res) =>{
          const { codigo } = req.params;
@@ -569,6 +556,17 @@ app.put("/cargo/codigo/:codigo", (req, res) => {
      });
 
  
+
+            // Teste para verificar se o servidor está rodando
+app.get("/", (req, res) => {
+    res.send("Servidor está rodando e tabelas criadas!");
+});
+
+// Iniciando o servidor
+app.listen(port, () => {
+    console.log(`Servidor rodando na porta ${port}`);
+});
+
 
             // Teste para verificar se o servidor está rodando
 app.get("/", (req, res) => {
