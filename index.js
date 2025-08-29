@@ -3,7 +3,7 @@ const bodyParser = require("body-parser");
 const sqlite3 = require("sqlite3").verbose();
 
 const app = express();
-const port = process.env.PORT || 3000;
+const port = process.env.PORT || 5000;
 
 // Serve os arquivos estáticos da pasta "public"
 app.use(express.static("public"));
@@ -189,7 +189,7 @@ app.post('/funcionario', (req, res) => {
     }
 
     const query = `INSERT INTO funcionario (codigo, nome, cpf, email, telefone, endereco, idade, cargo) VALUES (?, ?, ?, ?, ?, ?, ?, ?)`;
-    db.run(query, [codigo, nome, cpf, email, telefone, endereco, idade, cargo], function (err) {
+    db.run(query, [codigo, nome, cpf, email, telefone, endereco, idade, cargo_id], function (err) {
         if (err) {
             return res.status(500).send('Erro ao cadastrar funcionario.');
         }
@@ -232,8 +232,8 @@ app.put('/funcionario/cpf/:cpf', (req, res) => {
     const { cpf } = req.params;
     const { codigo, nome, email, telefone, endereco, idade, cargo } = req.body;
 
-    const query = `UPDATE funcionario SET nome = ?, email = ?, telefone = ?, endereco = ?, idade = ?, cargo = ?, WHERE cpf = ?`;
-    db.run(query, [codigo, nome, cpf, email, telefone, endereco, idade, cargo], function (err) {
+    const query = `UPDATE funcionario SET nome = ?, email = ?, telefone = ?, endereco = ?, idade = ?, cargo = ? WHERE cpf = ?`;
+    db.run(query, [nome, email, telefone, endereco, idade, cargo, cpf], function (err) {
         if (err) {
             return res.status(500).send('Erro ao atualizar funcionario.');
         }
@@ -242,6 +242,18 @@ app.put('/funcionario/cpf/:cpf', (req, res) => {
         }
         res.send('Funcionario atualizado com sucesso.');
     });
+    });
+    
+    // ROTA PARA BUSCAR TODOS OS CARGOS PARA CADASTRAR O CLIENTE
+    app.get('/buscar-cargo', (req, res) => {
+        try {
+            const rows = db.prepare("SELECT id, nome FROM cargo").all();
+            res.json(rows);
+        } catch (err) {
+            console.error('Erro ao buscar cargos:', err);
+            res.status(500).send('Erro ao buscar cargos');
+        }
+    
 });
 
 ///////////////////////////// Rotas para Pagamentos /////////////////////////////
@@ -312,7 +324,7 @@ app.put("/pagamentos/codigo/:codigo", (req, res) => {
     const { valor, dataPagamento, formaPagamento } = req.body;
 
     const query = `UPDATE pagamentos SET valor = ?, dataPagamento = ?, formaPagamento = ? WHERE codigo = ?`;
-    db.run(query, [codigo, valor, dataPagamento, formaPagamento], function (err) {
+    db.run(query, [valor, dataPagamento, formaPagamento, codigo], function (err) {
         if (err) {
             return res.status(500).send("Erro ao registrar pagamentos.");
         }
@@ -391,8 +403,8 @@ app.put("/pagamentos/codigo/:codigo", (req, res) => {
          const { codigo } = req.params;
          const { nome, treinos, faltas } = req.body;
 
-         const query = `UPDATE frequencia SET nome = ?, treinos = ?, codigo= ?, WHERE codigo = ?`;
-         db.run(query, [nome, email, telefone, endereco, cpf], function (err) {
+         const query = `UPDATE frequencia SET nome = ?, treinos = ?, faltas = ? WHERE codigo = ?`;
+         db.run(query, [nome, treinos, faltas, codigo], function (err) {
              if (err) {
                  return res.status(500).send("Erro ao atualizar cliente.");
              }
@@ -531,9 +543,9 @@ app.put("/cargo/codigo/:codigo", (req, res) => {
          });
      } else{
          // Se codigo não foi passado, retorna todos os movimento
-         const query = `SELECT * FROM movimento WHERE codigo LIKE ?`;
+         const query = `SELECT * FROM movimento`;
 
-         db.all(query, [`%${codigo}%`], (err, rows) =>{
+         db.all(query, (err, rows) =>{
              if (err){
                  console.error(err);
                  return res
