@@ -8,7 +8,7 @@
     <script src="funcionario.js"></script>
 
 </head>
-<body>
+<body onload="buscarcargo()" >
   <header>
     <img class="logo" src="imagens/logoo.png">
      <img class="logo2" src="imagens/ccmts.jfif">
@@ -52,7 +52,16 @@
             <label for="cargo">Cargo:</label>
             <input type="text" id="cargo" name="cargo" placeholder="Digite o cargo" required>
         </div>
-     </form>
+     
+        <div class="half-box">
+            <label for="cargoselecionado">Cargo:</label>
+            <select id="cargoselecionado" name="cargoselecionado" required>
+                <option value="">Selecione o Cargo</option>
+                <!-- opções de Cargo preenchidas vai aparecer aqui -->
+                </select>
+        </div>
+                
+    </form>
     <div class="container_botoes">
             <button class="botao1" onclick="incluirfuncionario(event)">Incluir</button>
             <button class="botao2" onclick="excluirCliente()">Excluir</button>
