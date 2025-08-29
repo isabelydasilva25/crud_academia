@@ -34,6 +34,28 @@ async function incluirfuncionario(event) {
     }
 }
 
+function buscarcargo() {
+    fetch('/buscar-cargo')
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Erro ao buscar fornecedores');
+            }
+            return response.json();
+        })
+        .then(cargo => {
+            const select = document.getElementById('cargoselecionado');
+            servicos.forEach(cargo => {
+                const option = document.createElement('option');
+                option.value = cargo.codigo; // Usa o id como valor
+                option.textContent = cargo.nome; // Nome do serviço exibido
+                select.appendChild(option);
+            });
+        })
+        .catch(error => {
+            console.error('Erro ao carregar os cargo:', error);
+        });
+}
+
 
 // Função para listar todos os funcionarios ou buscar funcionarios por CPF
 async function consultarFuncionario() {
