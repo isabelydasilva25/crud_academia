@@ -103,3 +103,8 @@ async function limpaFormulario() {
   document.getElementById('codigofun').value = '';
   document.getElementById('funcao').value = '';
 }
+
+// Função para voltar
+function voltarpagina() {
+    window.location.href = 'funcionario.html';
+}
