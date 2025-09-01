@@ -35,7 +35,7 @@ async function incluirfuncionario(event) {
 }
 
 function buscarcargo() {
-    fetch('/buscar-cargo')
+    fetch('/tabela-cargo')
         .then(response => {
             if (!response.ok) {
                 throw new Error('Erro ao buscar fornecedores');
@@ -150,3 +150,15 @@ async function limpaFormulario() {
     document.getElementById('idade').value = '';
     document.getElementById('cargo').value = '';
 }
+
+// Função para abrir a página de cargo
+function abrirCargo() {
+    window.open('cargo.html', '_blank');
+}
+
+
+// Função para voltar
+function voltarpagina() {
+    window.location.href = 'index.html';
+}
+
