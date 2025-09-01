@@ -39,26 +39,27 @@ db.serialize(() => {
     db.run(`
   
   CREATE TABLE if not exists funcionario (
-  id INTEGER primary key AUTOINCREMENT,
-  codigo VARCHAR(10),
-  nome VARCHAR(100) NOT NULL,
-  cpf VARCHAR(14) NOT NULL UNIQUE,
-  email VARCHAR(100),
-  endereco TEXT,
-  telefone VARCHAR(15),
-  idade INTEGER,
-  cargo VARCHAR(100)
+    id INTEGER primary key AUTOINCREMENT,
+    codigo VARCHAR(10),
+    nome VARCHAR(100) NOT NULL,
+    cpf VARCHAR(14) NOT NULL UNIQUE,
+    email VARCHAR(100),
+    endereco TEXT,
+    telefone VARCHAR(15),
+    idade INTEGER,
+    cargo INTEGER,
+    FOREIGN KEY (cargo) REFERENCES cargo (id)
   )
   `);
 
      db.run(`
     CREATE TABLE IF NOT EXISTS pagamentos (
-      id INTEGER PRIMARY KEY AUTOINCREMENT,
-      codigo INTEGER NOT NULL,
-      valor REAL NOT NULL,
-      dataPagamento DATE NOT NULL,
-      formaPagamento VARCHAR(50) NOT NULL,
-      FOREIGN KEY (codigo) REFERENCES pagamentos(id)
+          id INTEGER PRIMARY KEY AUTOINCREMENT,
+          codigo INTEGER NOT NULL,
+          valor REAL NOT NULL,
+          dataPagamento DATE NOT NULL,
+          formaPagamento VARCHAR(50) NOT NULL,
+          FOREIGN KEY (codigo) REFERENCES clientes(id) 
     )
     `);
 
@@ -189,7 +190,7 @@ app.post('/funcionario', (req, res) => {
     }
 
     const query = `INSERT INTO funcionario (codigo, nome, cpf, email, telefone, endereco, idade, cargo) VALUES (?, ?, ?, ?, ?, ?, ?, ?)`;
-    db.run(query, [codigo, nome, cpf, email, telefone, endereco, idade, cargo_id], function (err) {
+    db.run(query, [codigo, nome, cpf, email, telefone, endereco, idade, cargo], function (err) {
         if (err) {
             return res.status(500).send('Erro ao cadastrar funcionario.');
         }
@@ -244,10 +245,10 @@ app.put('/funcionario/cpf/:cpf', (req, res) => {
     });
     });
     
-    // ROTA PARA BUSCAR TODOS OS CARGOS PARA CADASTRAR O CLIENTE
-    app.get('/buscar-cargo', (req, res) => {
+    // ROTA PARA BUSCAR TODOS OS CARGOS PARA CADASTRAR O Funcionario
+    app.get('/tabela-cargo', (req, res) => {
         try {
-            const rows = db.prepare("SELECT id, nome FROM cargo").all();
+            const rows = db.prepare("SELECT id, codigo FROM cargo").all();
             res.json(rows);
         } catch (err) {
             console.error('Erro ao buscar cargos:', err);
