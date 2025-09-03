@@ -9,8 +9,9 @@ async function incluirfuncionario(event) {
         telefone: document.getElementById("telefone").value,
         endereco: document.getElementById("endereco").value,
         idade: document.getElementById("idade").value,
-        cargo: document.getElementById("cargo").value
+        cargo_id: parseInt(document.getElementById("cargoselecionado").value)
     };
+    alert('cargo_id');
 
     try {
         const response = await fetch('/funcionario', {
@@ -35,19 +36,19 @@ async function incluirfuncionario(event) {
 }
 
 function buscarcargo() {
-    fetch('/tabela-cargo')
+    fetch('/buscar-cargo')
         .then(response => {
             if (!response.ok) {
-                throw new Error('Erro ao buscar fornecedores');
+                throw new Error('Erro ao buscar cargo');
             }
             return response.json();
         })
-        .then(cargo => {
+        .then(servicos => {
             const select = document.getElementById('cargoselecionado');
-            servicos.forEach(cargo => {
+            servicos.forEach(servico=> {
                 const option = document.createElement('option');
-                option.value = cargo.codigo; // Usa o id como valor
-                option.textContent = cargo.nome; // Nome do serviço exibido
+                option.value = servico.id; // Usa o id como valor
+                option.textContent = servico.funcao; // Nome do serviço exibido
                 select.appendChild(option);
             });
         })
