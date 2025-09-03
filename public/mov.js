@@ -5,6 +5,7 @@ async function incluirmovimento(event){
        codigo: document.getElementById("codigo").value,
         horarioE: document.getElementById("horarioE").value,
         horarioS: document.getElementById("horarioS").value,
+        
     };
   
     try {
@@ -66,7 +67,7 @@ async function incluirmovimento(event){
     const movimento = {
         codigo,
         horarioE,
-        horarioS,
+        horarioS
     };
     try{
         const response = await fetch(`/movimento/codigo/${codigo}`,{
