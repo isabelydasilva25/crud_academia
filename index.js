@@ -500,8 +500,7 @@ app.put("/cargo/codigo/:codigo", (req, res) => {
 
 
 ////////////////////////////rotas para movimento////////////////////////////////
-
-      // Cadastrar movimento
+ // Cadastrar movimento
      app.post("/movimento", (req, res) =>{
          const { codigo, horarioE, horarioS } =
                  req.body;    
@@ -562,8 +561,9 @@ app.put("/cargo/codigo/:codigo", (req, res) => {
      app.put("/movimento/codigo/:codigo", (req, res) =>{
          const { codigo } = req.params;
          const { horarioE, horarioS } = req.body;
-         const query = `UPDATE movimento SET horarioE = ?, horarioS = ?, codigo= ?, WHERE codigo = ?`;
-         db.run(query, [horarioE, horarioS, codigo], function (err){
+         
+         const query = `UPDATE movimento SET horarioE = ?, horarioS = ?, WHERE codigo = ?`;
+         db.run(query, [codigo, horarioE, horarioS], function (err){
              if (err){
                  return res.status(500).send("Erro ao atualizar movimento.");
              }
